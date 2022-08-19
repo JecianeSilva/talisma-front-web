@@ -19,6 +19,7 @@ import history from "../../../config/history";
 
 import { Container, ContentBody, ContentHeader } from "../styles";
 import axios from "axios";
+import { getDate } from "../../../utils";
 
 function Clients() {
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ function Clients() {
     initialValues: {
       name: "",
       birthday: "",
-      create_at: "",
+      create_at: getDate(new Date()),
       document: "",
       status: 0,
       categories: 1,
@@ -64,7 +65,7 @@ function Clients() {
       email: Yup.string("E-mail")
         .email("Digite um endereço de e-mail válido.")
         .required("Campo Obrigatório"),
-      password: Yup.string().required("Campo Obrigatório"),
+      password: Yup.string(),
       phone: Yup.string().required("Campo Obrigatório"),
       whatsapp: Yup.string().required("Campo Obrigatório"),
 
@@ -87,10 +88,14 @@ function Clients() {
   });
 
   function handleSubmit(values) {
+    const password =
+      values?.name.substring(0, 4) +
+      values?.document.replace(/[^0-9,.]+/g, "").substring(9, 13);
+
     const data = {
       name: values.name,
       username: values.name,
-      password: values.password,
+      password: password,
       email: values.email,
       userType: 2,
       phone: values.phone,
@@ -231,6 +236,7 @@ function Clients() {
                       id="id"
                       name="ID*"
                       disabled
+                      placeholder="id"
                       variant="outlined"
                       autoComplete="text"
                       value={formik.values.id}
@@ -289,6 +295,7 @@ function Clients() {
                       id="create_at"
                       name="create_at"
                       autoFocus
+                      disabled
                       onChange={formik.handleChange}
                       value={formik.values.create_at}
                       error={
@@ -435,9 +442,11 @@ function Clients() {
                       size="small"
                       variant="outlined"
                       required
+                      disabled
                       fullWidth
                       id="password"
                       name="password"
+                      placeholder="********"
                       autoFocus
                       value={formik.values.password}
                       onChange={formik.handleChange}
@@ -471,13 +480,13 @@ function Clients() {
                           id="phone"
                           name="phone"
                           mask={
-                            value.length < 15 && parseInt(value[5]) !== 9
+                            value.length < 15 && parseInt(value[2]) !== 9
                               ? "(99) 9999-9999"
                               : "(99) 99999-9999"
                           }
                           value={value}
                           onChange={(e) => {
-                            setValue(e.target.value);
+                            setValue(e.target.value.replace(/[^0-9,.]+/g, ""));
                             formik.setFieldValue(
                               "phone",
                               e.target.value.replace(/[^0-9,.]+/g, "")
@@ -513,13 +522,13 @@ function Clients() {
                           id="whatsapp"
                           name="whatsapp"
                           mask={
-                            value2.length < 15 && parseInt(value2[5]) !== 9
+                            value2.length < 15 && parseInt(value2[2]) !== 9
                               ? "(99) 9999-9999"
                               : "(99) 99999-9999"
                           }
                           value={value2}
                           onChange={(e) => {
-                            setValue2(e.target.value);
+                            setValue2(e.target.value.replace(/[^0-9,.]+/g, ""));
                             formik.setFieldValue(
                               "whatsapp",
                               e.target.value.replace(/[^0-9,.]+/g, "")
