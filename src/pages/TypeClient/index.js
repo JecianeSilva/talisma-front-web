@@ -14,87 +14,18 @@ import { Container, ContentHeader } from "./styles";
 import Input from "../../components/Input";
 import Table from "../../components/Table";
 
-function Clients() {
+function TypeClients() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   // const [count, setCount] = useState();
-  const [users, setUsers] = useState([]);
+  const [userTypes, setUserTypes] = useState([]);
 
   const columnsTable = [
     {
-      title: "Nome",
-      field: "name",
+      title: "Descrição",
+      field: "description",
       cellStyle: {
         whiteSpace: "nowrap",
-      },
-    },
-    {
-      title: "Classificação",
-      field: "type",
-      cellStyle: {
-        whiteSpace: "nowrap",
-        minWidth: 150,
-      },
-    },
-    {
-      title: "Email",
-      field: "email",
-      cellStyle: {
-        whiteSpace: "nowrap",
-      },
-    },
-    {
-      title: "Telefone",
-      field: "phone",
-      cellStyle: {
-        whiteSpace: "nowrap",
-        minWidth: 150,
-      },
-      render: (rowData) => {
-        return rowData.phone && rowData.phone.length < 11 ? (
-          <NumberFormat
-            value={rowData.phone}
-            displayType={"text"}
-            format="(##) ####-####"
-          />
-        ) : (
-          <NumberFormat
-            value={rowData.phone}
-            displayType={"text"}
-            format="(##) # ####-####"
-          />
-        );
-      },
-    },
-    {
-      title: "WhatsApp",
-      field: "whatsapp",
-      cellStyle: {
-        whiteSpace: "nowrap",
-        minWidth: 150,
-      },
-      render: (rowData) => {
-        return rowData.whatsapp && rowData.whatsapp.length < 11 ? (
-          <NumberFormat
-            value={rowData.phone}
-            displayType={"text"}
-            format="(##) ####-####"
-          />
-        ) : (
-          <NumberFormat
-            value={rowData.phone}
-            displayType={"text"}
-            format="(##) # ####-####"
-          />
-        );
-      },
-    },
-    {
-      title: "Nascimento",
-      field: "datebirthday",
-      cellStyle: {
-        whiteSpace: "nowrap",
-        minWidth: 150,
       },
     },
     {
@@ -109,13 +40,13 @@ function Clients() {
   ];
 
   // get list users
-  async function loadDataUsers() {
+  async function loadDataUserTypes() {
     try {
-      const { data } = await Api.get("/user");
+      const { data } = await Api.get("/userType");
       // const _infos = headers["content-range"].split("/");
       // const count = _infos[_infos.length - 1].split("-")[1];
       // setCount(count);
-      setUsers(data);
+      setUserTypes(data);
     } catch (err) {
       toast(
         "error",
@@ -128,7 +59,7 @@ function Clients() {
   }
 
   useEffect(() => {
-    loadDataUsers();
+    loadDataUserTypes();
   }, []);
 
   return (
@@ -148,7 +79,7 @@ function Clients() {
                 lineheight: "43px",
               }}
             >
-              Clientes
+              Tipos de clientes
             </Typography>
             <Input
               style={{
@@ -176,25 +107,24 @@ function Clients() {
                   marginBottom: "16px",
                   borderRadius: "24px",
                 }}
-                onClick={() => history.push("/clientes/novo-cliente")}
+                onClick={() => history.push("/clientes/novo-tipo")}
               >
                 Adicionar
               </Button>
             </div>
           </ContentHeader>
-          <Table
-            pathname="clientes"
-            title="Clientes"
+          {/* <Table
+            pathname="cliente"
             perPage={10}
             columns={columnsTable}
-            data={users}
+            data={userTypes}
             selectable
             hideDeleteAction
-          />
+          /> */}
         </Container>
       )}
     </>
   );
 }
 
-export default Clients;
+export default TypeClients;

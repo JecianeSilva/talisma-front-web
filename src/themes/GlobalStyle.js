@@ -7,15 +7,20 @@ export const GlobalStyle = createGlobalStyle`
     
     box-sizing: border-box;
   }
+
   @font-face {
-    font-family: 'Calibri';
-    src: local(Calibri), url(./fonts/calibri-bold.ttf);
+    font-family: "CalibriBold";
+    src: local("CalibriBold"),
+      url("../fonts/Calibri/calibri-bold.ttf") ("truetype");
     font-weight: bold;
   }
+  
   @font-face {
-    font-family: 'Calibri';
-    src: local(Calibri), url(./fonts/calibri-regular.ttf);
+    font-family: "Calibri";
+    src: local("Calibri"),
+      url("../fonts/Calibri/calibri-regular.ttf") ("truetype");
   }
+
   html {
     @media (max-width: 1080px) {
         font-size: 93.75%;
@@ -35,7 +40,8 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   h1,h2,h3,h4,h5,h6, strong {
-    font-weight: 600;
+    font-family: 'CalibriBold';
+    font-weight: bold;
   }
 
   button {

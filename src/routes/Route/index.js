@@ -5,8 +5,6 @@ import { store } from "../../store";
 function RouteComponent({ component: Component, isPrivate, isAdmin, ...rest }) {
   const { signed } = store.getState().auth;
 
-  console.log(signed);
-
   if (!signed && isPrivate) {
     return <Redirect to="/" />;
   }

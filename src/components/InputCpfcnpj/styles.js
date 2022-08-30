@@ -6,7 +6,7 @@ export const InputBlock = styled.div`
 
   label {
     font-size: 0.9rem;
-    font-family: "Calibri", sans-serif;
+
     font-weight: bold;
     color: var(--label-input);
   }
@@ -21,7 +21,7 @@ export const InputBlock = styled.div`
     margin-top: 0.6rem;
 
     font-size: 0.9rem;
-    font-family: "Calibri", sans-serif;
+
     color: var(--text-gray);
   }
 
@@ -39,7 +39,7 @@ export const InputBlock = styled.div`
   .error {
     display: block;
     color: #f00;
-    font-family: "Calibri", sans-serif;
+
     font-weight: bold;
   }
 `;

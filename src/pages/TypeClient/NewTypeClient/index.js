@@ -20,6 +20,7 @@ import history from "../../../config/history";
 import { Container, ContentBody, ContentHeader } from "../styles";
 import axios from "axios";
 import { getDate } from "../../../utils";
+import Api from "../../../config/api";
 
 function Clients() {
   const [loading, setLoading] = useState(false);
@@ -53,12 +54,12 @@ function Clients() {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo Obrigatório"),
-      create_at: Yup.string().required("Campo Obrigatório"),
+      create_at: Yup.string(),
       birthday: Yup.string().required("Campo Obrigatório"),
       document: Yup.string()
         .required("Campo Obrigatório")
         .min(11, "Dado inválido"),
-      type: Yup.string().required("Campo Obrigatório"),
+      userType: Yup.string().required("Campo Obrigatório"),
       categories: Yup.string().required("Campo Obrigatório"),
       status: Yup.string().required("Campo Obrigatório"),
 
@@ -75,10 +76,7 @@ function Clients() {
       address_district: Yup.string().required("Campo Obrigatório"),
       address_reference: Yup.string(),
       address_street: Yup.string().required("Campo Obrigatório"),
-      address_number: Yup.number()
-        .required("Campo Obrigatório")
-        .moreThan(-1, "Dado inválido")
-        .integer("Dado inválido"),
+      address_number: Yup.string().required("Campo Obrigatório"),
       address_complement: Yup.string(),
     }),
     onSubmit: async (values) => {
@@ -90,26 +88,37 @@ function Clients() {
   function handleSubmit(values) {
     const password =
       values?.name.substring(0, 4) +
-      values?.document.replace(/[^0-9,.]+/g, "").substring(9, 13);
+      values?.document.replace(/[^0-9]+/g, "").substring(7, 11);
 
     const data = {
       name: values.name,
-      username: values.name,
+      username: values.name, //remover
       password: password,
       email: values.email,
-      userType: 2,
-      phone: values.phone,
       document: values.document,
-      status: values.status,
+      birthday: values.birthday,
+      userType: values.type,
+      phone: values.phone,
+      // whatsapp: values.whatsapp,
+      // status: values.status,
+      // categories: values.categories,
+
+      address_code: values.address_code,
+      address_city: values.address_city,
+      address_state: values.address_state,
+      address_street: values.address_street,
+      address_district: values.address_district,
+      address_reference: values.address_reference,
+      address_number: values.address_number,
+      address_complement: values.address_complement,
     };
     try {
-      axios
-        .post("/cliente", data)
+      Api.post("/user", data)
         .then((response) => {
-          if (response.status === 200) {
-            toast.success("Usuário cadastrado com sucesso!");
+          if (response.status === 201) {
+            toast.success("Cliente cadastrado com sucesso!");
             formEl.current.reset();
-            // history.goBack();
+            history.goBack();
           }
         })
         .catch((err) => {
@@ -332,7 +341,7 @@ function Clients() {
                           onChange={(e) => {
                             formik.setFieldValue(
                               "document",
-                              e.target.value.replace(/[^0-9,.]+/g, "")
+                              e.target.value.replace(/[^0-9]/g, "")
                             );
                           }}
                         />
@@ -487,10 +496,7 @@ function Clients() {
                           value={value}
                           onChange={(e) => {
                             setValue(e.target.value.replace(/[^0-9,.]+/g, ""));
-                            formik.setFieldValue(
-                              "phone",
-                              e.target.value.replace(/[^0-9,.]+/g, "")
-                            );
+                            formik.setFieldValue("phone", e.target.value);
                           }}
                         />
                       </div>
@@ -640,7 +646,6 @@ function Clients() {
                       value={formik.values.address_number}
                       id="address_number"
                       name="address_number"
-                      type="number"
                       autoFocus
                       onWheelCapture={(e) => {
                         e.target.blur();

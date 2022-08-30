@@ -1,11 +1,12 @@
 import axios from "axios";
 import { store } from "../store/index";
 
-const api = axios.create({
-  baseURL: "/api/",
+const Api = axios.create({
+  // baseURL: "/api/",
+  baseURL: "http://localhost:3333/",
 });
 
-api.interceptors.request.use((config) => {
+Api.interceptors.request.use((config) => {
   const state = store.getState();
   const { access_token } = state.auth;
 
@@ -16,4 +17,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export default api;
+Api.interceptors.response.use((response) => {
+  return response;
+});
+export default Api;

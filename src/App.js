@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Themes from "./themes";
 import Route from "./routes/index.routes";
 
-import * as serviceWorker from "./serviceWorker";
+// import * as serviceWorker from "./serviceWorker";
 
 import { store, persistor } from "./store/index";
 

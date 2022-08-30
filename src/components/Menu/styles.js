@@ -4,7 +4,6 @@ import { List } from "@material-ui/core";
 export const ListContainer = styled(List)`
   span {
     flex: 1;
-    font-family: "Calibri";
     font-style: normal;
     margin-left: 16px;
     font-weight: normal;

@@ -1,19 +1,23 @@
 import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import * as yup from "yup";
 import { useFormik } from "formik";
 
-import { Typography, AppBar, Toolbar, TextField } from "@material-ui/core";
+import {
+  Typography,
+  AppBar,
+  Toolbar,
+  TextField,
+  Button,
+  InputAdornment,
+  IconButton,
+} from "@material-ui/core";
 
 import { Creators } from "../../store/ducks/auth";
-
-import Input from "../../components/Input";
-import Button from "../../components/Button";
-
 import TalismaLogo from "../../assets/images/logo.png";
 
 import {
@@ -24,16 +28,24 @@ import {
   Logo,
   LogoContainer,
 } from "./style";
+import Loading from "../../components/Loading";
+import {
+  Visibility,
+  VisibilityOff,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
+} from "@material-ui/icons";
 
 function Login() {
   const dispatch = useDispatch();
-  const formRef = useRef(null);
+  const formEl = useRef(null);
   const [loading, setLoading] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
   const formik = useFormik({
     initialValues: {
       email: "",
-      document: "",
       password: "",
     },
     validationSchema: yup.object({
@@ -45,17 +57,8 @@ function Login() {
     }),
     onSubmit: async (values) => {
       setLoading(true);
-      try {
-        dispatch(Creators.signInRequest(values.email, values.password));
-      } catch (err) {
-        toast(
-          "error",
-          "Erro",
-          err?.response?.data?.message || "Não foi possível realizar login"
-        );
-      } finally {
-        setLoading(false);
-      }
+      dispatch(Creators.signInRequest(values.email, values.password));
+      setLoading(false);
     },
   });
 
@@ -73,14 +76,17 @@ function Login() {
         <LogoContainer>
           <Logo src={TalismaLogo} />
         </LogoContainer>
-        <FormContainer ref={formRef} onSubmit={() => formik.handleSubmit()}>
+        <FormContainer ref={formEl} noValidate autoComplete={"off"}>
           <div style={{ marginBottom: "24px" }}>
-            <h5>Login</h5>
+            <Typography
+              variant="h4"
+              style={{ color: "black", marginBottom: 5 }}
+            >
+              Login
+            </Typography>
             <TextField
               id="login"
-              variant="filled"
-              size="small"
-              margin="dense"
+              variant="outlined"
               value={formik.values.email}
               placeholder="exemplo@exemplo.com"
               onChange={(e) => {
@@ -92,58 +98,74 @@ function Login() {
             />
           </div>
           <div>
-            <h5>Senha</h5>
-
+            <Typography
+              variant="h4"
+              style={{ color: "black", marginBottom: 5 }}
+            >
+              Senha
+            </Typography>
             <TextField
               id="password"
-              variant="filled"
-              size="small"
-              margin="dense"
+              variant="outlined"
               value={formik.values.password}
               onChange={formik.handleChange}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
               placeholder="Senha"
-              type="password"
+              type={showPassword ? "text" : "password"}
               fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword}>
+                      {showPassword ? (
+                        <VisibilityOutlined color="primary" />
+                      ) : (
+                        <VisibilityOffOutlined color="primary" />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </div>
-          {/* <Input
-            name="email"
-            type="email"
-            label="Login/E-mail"
-            registerValue={{ ...register("email") }}
-            disabled={loading}
-          /> */}
-          {/* <Input
-            name="name"
-            id="name"
-            type="email"
-            placeholder="Email"
-            innerRef={register({ required: true })}
-            {...register("email")}
-            className={classnames({ "is-invalid": errors["email"] })}
-          /> */}
-
-          {/* <Input
-            name="password"
-            type="password"
-            registerValue={{ ...register("password") }}
-            label="Senha"
-            disabled={loading}
-          /> */}
-          <Button
-            title="Entrar"
-            type="submit"
-            isLoading={loading}
-            style={{ background: "#70163A" }}
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "16px",
+            }}
           >
-            Entrar
-          </Button>
+            <Button
+              onClick={formik.handleSubmit}
+              variant="contained"
+              style={{
+                backgroundColor: "#70163A",
+                color: "#FFF",
+                width: "90%",
+                marginTop: "24px",
+                borderRadius: "30px",
+                padding: "1rem",
+                disabled: loading,
+              }}
+            >
+              {loading ? (
+                <Loading size={3} color="white" />
+              ) : (
+                <span
+                  style={{
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {"Entrar"}
+                </span>
+              )}
+            </Button>
+          </div>
         </FormContainer>
-        {/* <Link to="/recover-password">
-          Esqueceu a <b>senha</b>?
-        </Link> */}
       </Container>
     </>
   );

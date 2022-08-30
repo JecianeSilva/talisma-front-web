@@ -33,5 +33,8 @@ export default {
       200: "#8C8C8C",
       300: "#CECECE",
     },
+    black: {
+      main: "#1F1F1F",
+    },
   },
 };

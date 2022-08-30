@@ -8,7 +8,7 @@ export const InputBlock = styled.div`
 
   label {
     font-size: 1.2rem;
-    font-family: "Calibri", sans-serif;
+
     font-weight: bold;
     color: var(--label-input);
   }
@@ -24,14 +24,14 @@ export const InputBlock = styled.div`
     padding-bottom: 0.6rem;
 
     font-size: 1.2rem;
-    font-family: "Calibri", sans-serif;
+
     color: var(--text-gray);
   }
 
   .error {
     display: block;
     color: #f00;
-    font-family: "Calibri", sans-serif;
+
     font-weight: bold;
     margin-bottom: 1.6rem;
     margin-top: -1rem;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
 
@@ -17,6 +18,8 @@ import {
   ArrowBackIos,
   ExpandMore,
   ExpandLess,
+  ArrowForward,
+  ExitToAppTwoTone,
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/styles";
 import { SvgIcon } from "@material-ui/core";
@@ -34,6 +37,7 @@ import { ListContainer, Logo, LogoContainer } from "./styles";
 
 import TalismaLogo from "../../assets/images/logo.png";
 import TalismaLogoIcon from "../../assets/images/logoIcon.png";
+import { Creators } from "../../store/ducks/auth";
 
 const useStyles = makeStyles((theme) => ({
   menuClose: {
@@ -45,19 +49,16 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "19.5rem",
     width: "19.5rem",
   },
-  sidebar: {
-    height: "100%",
-  },
   listItem: {
     display: "flex",
     flex: "column",
   },
 }));
 
-function DrawerApp({ open, setOpen }) {
+function Menu({ open, setOpen }) {
   const [menuItens, setMenuItens] = useState([]);
   const pathnamePage = window.location.pathname;
-
+  const dispatch = useDispatch();
   const classes = useStyles();
   useEffect(() => {
     setMenuItens([
@@ -70,19 +71,19 @@ function DrawerApp({ open, setOpen }) {
       {
         label: "Clientes",
         path: "/clientes",
-        key: "clientes",
+        key: "cliente",
         icon: <SvgIcon component={iconClient} viewBox="0 0 24 24" />,
         subItem: [
           {
             label: "Clientes",
-            path: "/clientes/clientes",
-            key: "clientes/clientes",
+            path: "/clientes",
+            key: "clientes",
             icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
           },
           {
             label: "Tipos de cliente",
-            path: "/clientes/tipo",
-            key: "clientes/tipo",
+            path: "/tipo-cliente",
+            key: "tipo-cliente",
             icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
           },
         ],
@@ -150,22 +151,25 @@ function DrawerApp({ open, setOpen }) {
         <Divider />
       </div>
       {/* <ProfileHeader /> */}
-      <ListContainer
-        className={classes.sidebar}
-        style={{ width: open ? "19.5rem" : "5rem" }}
-      >
+      <ListContainer style={{ width: open ? "19.5rem" : "5rem", padding: 0 }}>
         {menuItens.map((item) => (
           <>
             {!item.subItem ? (
               <ListItem
                 component={Link}
                 to={item.path}
+                style={{ flexDirection: open ? "row" : "column" }}
                 button
                 key={item.path}
-                selected={pathnamePage.includes(item.path)}
+                selected={pathnamePage.includes(item.key)}
               >
                 {item.icon}
-                <span>{item.label}</span>
+                {open && <span>{item.label}</span>}
+                <div>
+                  {item.subItem && (
+                    <>{item.expand ? <ExpandLess /> : <ExpandMore />}</>
+                  )}
+                </div>
               </ListItem>
             ) : (
               <>
@@ -174,7 +178,7 @@ function DrawerApp({ open, setOpen }) {
                   button
                   style={{ flexDirection: open ? "row" : "column" }}
                   key={item.path}
-                  selected={pathnamePage.includes(item.path)}
+                  selected={pathnamePage.includes(item.key)}
                   onClick={() => handleMenuClick(item)}
                 >
                   {item.icon}
@@ -218,8 +222,22 @@ function DrawerApp({ open, setOpen }) {
           </>
         ))}
       </ListContainer>
+      <ListContainer
+        className={classes.sidebar}
+        style={{ width: open ? "19.5ren" : "5rem", padding: 0 }}
+      >
+        <ListItem
+          button
+          style={{ flexDirection: open ? "row" : "column" }}
+          key={"sair"}
+          onClick={() => dispatch(Creators.signOut())}
+        >
+          <ExitToAppTwoTone />
+          {open && <span>{"Sair"}</span>}
+        </ListItem>
+      </ListContainer>
     </Drawer>
   );
 }
 
-export { DrawerApp };
+export { Menu };

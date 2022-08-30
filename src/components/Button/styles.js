@@ -10,7 +10,6 @@ export const ButtonContainer = styled.button`
   border: none;
 
   font-size: ${(props) => (props.font ? props.font : 1.3)}rem;
-  font-family: "Calibri", sans-serif;
   font-weight: bold;
 
   display: flex;
