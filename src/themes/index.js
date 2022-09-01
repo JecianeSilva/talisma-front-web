@@ -5,8 +5,9 @@ import { createTheme } from "@material-ui/core";
 const overrides = {
   typography: {
     h1: {
-      fontSize: "1.5rem",
-      lineHeight: "1.6rem",
+      fontFamily: `"Calibri", "Roboto", sans-serif`,
+      fontSize: "2.18rem",
+      lineHeight: "2.6rem",
     },
     h2: {
       fontSize: "1.375rem",

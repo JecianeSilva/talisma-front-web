@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { withRouter } from "react-router-dom";
-import { toast } from "react-toastify";
 
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -29,12 +28,7 @@ import {
   LogoContainer,
 } from "./style";
 import Loading from "../../components/Loading";
-import {
-  Visibility,
-  VisibilityOff,
-  VisibilityOffOutlined,
-  VisibilityOutlined,
-} from "@material-ui/icons";
+import { VisibilityOffOutlined, VisibilityOutlined } from "@material-ui/icons";
 
 function Login() {
   const dispatch = useDispatch();
@@ -42,7 +36,6 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = () => setShowPassword(!showPassword);
   const formik = useFormik({
     initialValues: {
       email: "",

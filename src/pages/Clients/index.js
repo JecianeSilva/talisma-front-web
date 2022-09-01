@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import NumberFormat from "react-number-format";
-import { Typography, Button } from "@material-ui/core";
+import {
+  Typography,
+  Button,
+  InputAdornment,
+  IconButton,
+  TextField,
+} from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 
 import Api from "../../config/api";
@@ -139,41 +145,40 @@ function Clients() {
         <Container>
           <ContentHeader>
             <Typography
-              variant="h3"
+              variant="h1"
               style={{
                 color: "#656263",
                 marginRight: "40px",
-                marginBottom: "16px",
-                fontSize: "35px",
-                lineheight: "43px",
               }}
             >
               Clientes
             </Typography>
-            <Input
-              style={{
-                width: "600px",
-                backgroundColor: "#fff",
-                border: "1px solid #cecece",
-                borderRadius: "24px",
-                padding: "11px 10px",
-                gap: "10px",
-                height: "48px",
-                boxShadow: "0px 0px 16px rgba(0,0,0,0.03)",
-              }}
-              placeholder={"Pesquisar"}
-              icon={Search}
+
+            <TextField
+              id="search"
+              variant="outlined"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              placeholder={"Pesquisar"}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton onClick={(e) => setSearch(e.target.value)}>
+                      <Search />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            <div style={{ display: "flex", flex: 1 }}>
+            <div
+              style={{ display: "flex", flex: 1, justifyContent: "flex-end" }}
+            >
               <Button
                 variant="contained"
                 size="large"
                 style={{
                   backgroundColor: "#70163A",
                   color: "#FFF",
-                  marginBottom: "16px",
                   borderRadius: "24px",
                 }}
                 onClick={() => history.push("/clientes/novo-cliente")}

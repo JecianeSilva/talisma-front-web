@@ -82,7 +82,7 @@ function Table({
         localization={localization}
         options={{
           pageSize: data && data.length < perPage ? data.length : perPage,
-          //   selection: selectable,
+          // selection: selectable,
           showTitle: true,
           search: false,
           pageSizeOptions: [10],

@@ -10,8 +10,14 @@ import {
   TextField,
   MenuItem,
   Grid,
+  InputAdornment,
 } from "@material-ui/core";
-import { ArrowBackIos, Search, SearchOutlined } from "@material-ui/icons";
+import {
+  ArrowBackIos,
+  SearchOutlined,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
+} from "@material-ui/icons";
 import InputMask from "react-input-mask";
 
 import Loading from "../../../components/Loading";
@@ -28,6 +34,8 @@ function Clients() {
   const formEl = useRef(null);
   const [value, setValue] = useState("");
   const [value2, setValue2] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const formik = useFormik({
     initialValues: {
@@ -81,12 +89,12 @@ function Clients() {
       address_complement: Yup.string(),
     }),
     onSubmit: async (values) => {
-      console.log(values);
       handleSubmit(values);
     },
   });
 
   function handleSubmit(values) {
+    setLoading(true);
     const password =
       values?.name.substring(0, 4) +
       values?.document.replace(/[^0-9]+/g, "").substring(7, 11);
@@ -131,6 +139,8 @@ function Clients() {
       } else {
         toast.error("Error no sistema! Tente novamente mais tarde.");
       }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -167,11 +177,11 @@ function Clients() {
   }
 
   async function loadData() {
+    setLoading(true);
     try {
       const responseUserType = await Api.get(`/userType`);
       if (responseUserType) {
         setUserTypes(responseUserType.data);
-        formik && formik.setFieldValue("userType", responseUserType.data[0].id);
       }
     } catch (err) {
       toast(
@@ -179,11 +189,15 @@ function Clients() {
         "Erro",
         err?.response.data?.message || "Não foi possível carregar os usuários"
       );
+    } finally {
+      setLoading(false);
     }
   }
+
   useEffect(() => {
     loadData();
   }, []);
+
   return (
     <>
       {loading ? (
@@ -473,7 +487,6 @@ function Clients() {
                   <Grid item xs={3}>
                     <Typography>Senha*</Typography>
                     <TextField
-                      type="password"
                       size="small"
                       variant="outlined"
                       required
@@ -492,6 +505,20 @@ function Clients() {
                       helperText={
                         formik.touched.password && formik.errors.password
                       }
+                      type={showPassword ? "text" : "password"}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={handleClickShowPassword}>
+                              {showPassword ? (
+                                <VisibilityOutlined color="primary" />
+                              ) : (
+                                <VisibilityOffOutlined color="primary" />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </Grid>
                   <Grid item xs={3}>
