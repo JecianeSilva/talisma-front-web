@@ -1,13 +1,33 @@
 import { lazy } from "react";
 
-// pages cliente
+// pages clientes
+const Products = lazy(() => import("./Products"));
+const NewProduct = lazy(() => import("./Products/NewProduct"));
 const Clients = lazy(() => import("./Clients"));
-const TypeClients = lazy(() => import("./TypeClient"));
 const NewClient = lazy(() => import("./Clients/NewClient"));
-const NewTypeClient = lazy(() => import("./Clients/NewClient"));
 const EditClient = lazy(() => import("./Clients/EditClient"));
+const ViewClient = lazy(() => import("./Clients/ViewClient"));
+
+//pages tipo de cliente
+const TypeClients = lazy(() => import("./TypeClient"));
+const NewTypeClient = lazy(() => import("./TypeClient/NewTypeClient"));
+const EditTypeClient = lazy(() => import("./TypeClient/EditTypeClient"));
+const ViewTypeClient = lazy(() => import("./TypeClient/ViewTypeClient"));
 
 export const listRoutes = [
+  {
+    exact: false,
+    private: true,
+    path: "/produtos",
+    component: Products,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/produtos/novo-produto",
+    component: NewProduct,
+  },
+
   // pages Cliente
   {
     exact: false,
@@ -18,20 +38,8 @@ export const listRoutes = [
   {
     exact: false,
     private: true,
-    path: "/tipo-cliente",
-    component: TypeClients,
-  },
-  {
-    exact: false,
-    private: true,
     path: "/clientes/novo-cliente",
     component: NewClient,
-  },
-  {
-    exact: false,
-    private: true,
-    path: "/clientes/novo-tipo",
-    component: NewTypeClient,
   },
   {
     exact: false,
@@ -43,6 +51,30 @@ export const listRoutes = [
     exact: false,
     private: true,
     path: "/clientes/view-clientes/:id",
-    component: EditClient,
+    component: ViewClient,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/tipos-cliente",
+    component: TypeClients,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/tipos-cliente/novo-tipo",
+    component: NewTypeClient,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/tipos-cliente/editar-tipo/:id",
+    component: EditTypeClient,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/tipos-cliente/view-tipo/:id",
+    component: ViewTypeClient,
   },
 ];

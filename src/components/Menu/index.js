@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { withRouter } from "react-router";
+// import { withRouter } from "react-router";
 
 import clsx from "clsx";
 // import { useSelector } from "react-redux";
@@ -11,27 +11,24 @@ import {
   IconButton,
   Divider,
   Collapse,
-  List,
 } from "@material-ui/core";
 import {
   ArrowForwardIos,
-  ArrowBackIos,
   ExpandMore,
   ExpandLess,
-  ArrowForward,
   ExitToAppTwoTone,
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/styles";
 import { SvgIcon } from "@material-ui/core";
 
 import { ReactComponent as iconProduct } from "../../assets/icons/anel.svg";
-import { ReactComponent as iconOrder } from "../../assets/icons/carrinho.svg";
+// import { ReactComponent as iconOrder } from "../../assets/icons/carrinho.svg";
 import { ReactComponent as iconClient } from "../../assets/icons/perfil.svg";
 import { ReactComponent as circle } from "../../assets/icons/circle.svg";
-import { ReactComponent as iconStock } from "../../assets/icons/pedido.svg";
-import { ReactComponent as Cupons } from "../../assets/icons/home.svg";
-import { ReactComponent as iconCollaborators } from "../../assets/icons/home2.svg";
-import { ReactComponent as Permissoes } from "../../assets/icons/troca.svg";
+// import { ReactComponent as iconStock } from "../../assets/icons/pedido.svg";
+// import { ReactComponent as Cupons } from "../../assets/icons/home.svg";
+// import { ReactComponent as iconCollaborators } from "../../assets/icons/home2.svg";
+// import { ReactComponent as Permissoes } from "../../assets/icons/troca.svg";
 
 import { ListContainer, Logo, LogoContainer } from "./styles";
 
@@ -67,6 +64,14 @@ function Menu({ open, setOpen }) {
         path: "/produtos",
         key: "produtos",
         icon: <SvgIcon component={iconProduct} viewBox="0 0 24 24" />,
+        subItem: [
+          {
+            label: "Produtos",
+            path: "/produtos",
+            key: "produtos",
+            icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
+          },
+        ],
       },
       {
         label: "Clientes",
@@ -82,8 +87,8 @@ function Menu({ open, setOpen }) {
           },
           {
             label: "Tipos de cliente",
-            path: "/tipo-cliente",
-            key: "tipo-cliente",
+            path: "/tipos-cliente",
+            key: "tipos-cliente",
             icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
           },
         ],
@@ -160,7 +165,7 @@ function Menu({ open, setOpen }) {
                 to={item.path}
                 style={{ flexDirection: open ? "row" : "column" }}
                 button
-                key={item.path}
+                key={item.path + item.key}
                 selected={pathnamePage.includes(item.key)}
               >
                 {item.icon}
@@ -177,7 +182,7 @@ function Menu({ open, setOpen }) {
                   component={!item.subItem && Link}
                   button
                   style={{ flexDirection: open ? "row" : "column" }}
-                  key={item.path}
+                  key={item.path + item.key}
                   selected={pathnamePage.includes(item.key)}
                   onClick={() => handleMenuClick(item)}
                 >
@@ -210,7 +215,13 @@ function Menu({ open, setOpen }) {
                           }}
                         >
                           {subItem.icon}
-                          <span style={{ margin: "0px", marginTop: "-14px" }}>
+                          <span
+                            style={{
+                              margin: "0px",
+                              marginTop: "-14px",
+                              fontWeight: "normal",
+                            }}
+                          >
                             {subItem.label}
                           </span>
                         </ListItem>

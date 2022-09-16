@@ -19,6 +19,8 @@ import {
   VisibilityOutlined,
 } from "@material-ui/icons";
 import InputMask from "react-input-mask";
+import ReactPhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 import Loading from "../../../components/Loading";
 import history from "../../../config/history";
@@ -32,8 +34,6 @@ function Clients() {
   const [loading, setLoading] = useState(false);
   const [userTypes, setUserTypes] = useState();
   const formEl = useRef(null);
-  const [value, setValue] = useState("");
-  const [value2, setValue2] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -45,7 +45,7 @@ function Clients() {
       document: "",
       status: 0,
       categories: 1,
-      type: 2,
+      userType: "",
 
       email: "",
       password: "",
@@ -68,16 +68,26 @@ function Clients() {
       document: Yup.string()
         .required("Campo Obrigatório")
         .min(11, "Dado inválido"),
+      // userType: Yup.object()
+      //   .shape({
+      //     id: Yup.string(),
+      //     description: Yup.string(),
+      //   })
+      //   .nullable("Campo Obrigatório")
+      //   .required("Campo Obrigatório"),
       userType: Yup.string().required("Campo Obrigatório"),
-      categories: Yup.string().required("Campo Obrigatório"),
-      status: Yup.string().required("Campo Obrigatório"),
-
+      categories: Yup.number(),
+      status: Yup.number(),
       email: Yup.string("E-mail")
         .email("Digite um endereço de e-mail válido.")
         .required("Campo Obrigatório"),
       password: Yup.string(),
-      phone: Yup.string().required("Campo Obrigatório"),
-      whatsapp: Yup.string().required("Campo Obrigatório"),
+      phone: Yup.string()
+        .required("Campo Obrigatório")
+        .min(12, "Dado inválido"),
+      whatsapp: Yup.string()
+        .required("Campo Obrigatório")
+        .min(12, "Dado inválido"),
 
       address_code: Yup.number().required("Campo Obrigatório"),
       address_state: Yup.string().required("Campo Obrigatório"),
@@ -101,16 +111,16 @@ function Clients() {
 
     const data = {
       name: values.name,
-      username: values.name, //remover
+      username: values.name,
       password: password,
       email: values.email,
       document: values.document,
       birthday: values.birthday,
       userType_id: values.userType,
       phone: values.phone,
-      // whatsapp: values.whatsapp,
-      // status: values.status,
-      // categories: values.categories,
+      whatsapp: values.whatsapp,
+      status: values.status,
+      categories: values.categories,
 
       address_code: values.address_code,
       address_city: values.address_city,
@@ -181,7 +191,12 @@ function Clients() {
     try {
       const responseUserType = await Api.get(`/userType`);
       if (responseUserType) {
-        setUserTypes(responseUserType.data);
+        setUserTypes(
+          responseUserType.data.map((item) => ({
+            id: item.id,
+            description: item.description,
+          }))
+        );
       }
     } catch (err) {
       toast(
@@ -399,6 +414,10 @@ function Clients() {
                       value={formik.values.status}
                       autoFocus
                       onChange={formik.handleChange}
+                      error={
+                        formik.touched.status && Boolean(formik.errors.status)
+                      }
+                      helperText={formik.touched.status && formik.errors.status}
                     >
                       <MenuItem value={0} key={0}>
                         {"Ativo"}
@@ -421,9 +440,19 @@ function Clients() {
                       value={formik.values.categories}
                       autoFocus
                       onChange={formik.handleChange}
+                      error={
+                        formik.touched.categories &&
+                        Boolean(formik.errors.categories)
+                      }
+                      helperText={
+                        formik.touched.categories && formik.errors.categories
+                      }
                     >
-                      <MenuItem value={1} key={"categoria 1"}>
+                      <MenuItem value={1} key={1}>
                         {"Categoria 1"}
+                      </MenuItem>
+                      <MenuItem value={2} key={2}>
+                        {"Categoria 2"}
                       </MenuItem>
                     </TextField>
                   </Grid>
@@ -440,10 +469,13 @@ function Clients() {
                       value={formik.values.userType}
                       autoFocus
                       onChange={formik.handleChange}
-                      // value={type}
-                      // onChange={(e) =>
-                      //     setType(e.target.value)
-                      // }
+                      error={
+                        formik.touched.userType &&
+                        Boolean(formik.errors.userType)
+                      }
+                      helperText={
+                        formik.touched.userType && formik.errors.userType
+                      }
                     >
                       {userTypes &&
                         userTypes.map((item) => (
@@ -522,88 +554,66 @@ function Clients() {
                     />
                   </Grid>
                   <Grid item xs={3}>
-                    <div>
-                      <Typography>Telefone*</Typography>
-                      <div>
-                        <InputMask
-                          required
-                          className={"MuiInputBase-input"}
-                          style={{
-                            width: "93%",
-                            padding: "8.5px 10px",
-                            border: "1px solid rgb(0,0,0,0.25)",
-                            borderRadius: "4px",
-                            minHeight: "20px",
-                            borderColor:
-                              formik.touched.phone &&
-                              Boolean(formik.errors.phone) &&
-                              "#F32424",
-                          }}
-                          id="phone"
-                          name="phone"
-                          mask={
-                            value.length < 15 && parseInt(value[2]) !== 9
-                              ? "+55(99)9999-9999"
-                              : "+55(99)99999-9999"
-                          }
-                          value={value}
-                          onChange={(e) => {
-                            setValue(e.target.value.replace(/[^0-9,.]+/g, ""));
-                            formik.setFieldValue(
-                              "phone",
-                              e.target.value.replace("-", "")
-                            );
-                          }}
-                        />
+                    <Typography>Telefone*</Typography>
+                    <ReactPhoneInput
+                      id="phone"
+                      name="phone"
+                      copyNumbersOnly
+                      localization={"pt"}
+                      country={"br"}
+                      value={formik.values.phone}
+                      onChange={(phoneNumber) => {
+                        formik.setFieldValue("phone", phoneNumber);
+                      }}
+                      style={{
+                        width: "100%",
+                        border: "1px solid rgb(0,0,0,0.25)",
+                        borderRadius: "4px",
+
+                        borderColor:
+                          formik.touched.phone &&
+                          Boolean(formik.errors.phone) &&
+                          "#F32424",
+                      }}
+                      onBlur={formik.handleBlur}
+                      component={TextField}
+                    />
+                    {formik.touched.phone && formik.errors.phone ? (
+                      <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
+                        {formik.errors.phone}
                       </div>
-                      {formik.touched.phone && formik.errors.phone ? (
-                        <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
-                          {formik.errors.phone}
-                        </div>
-                      ) : null}
-                    </div>
+                    ) : null}
                   </Grid>
                   <Grid item xs={3}>
-                    <div>
-                      <Typography>Whatsapp*</Typography>
-                      <div>
-                        <InputMask
-                          required
-                          className={"MuiInputBase-input"}
-                          style={{
-                            width: "93%",
-                            padding: "8.5px 10px",
-                            border: "1px solid rgb(0,0,0,0.25)",
-                            borderRadius: "4px",
-                            minHeight: "20px",
-                            borderColor:
-                              formik.touched.whatsapp &&
-                              Boolean(formik.errors.whatsapp) &&
-                              "#F32424",
-                          }}
-                          id="whatsapp"
-                          name="whatsapp"
-                          mask={
-                            value2.length < 15 && parseInt(value2[2]) !== 9
-                              ? "(99) 9999-9999"
-                              : "(99) 99999-9999"
-                          }
-                          value={value2}
-                          onChange={(e) => {
-                            setValue2(e.target.value.replace(/[^0-9,.]+/g, ""));
-                            formik.setFieldValue(
-                              "whatsapp",
-                              e.target.value.replace(/[^0-9,.]+/g, "")
-                            );
-                          }}
-                        />
+                    <Typography>Whatsapp*</Typography>
+                    <ReactPhoneInput
+                      id="whatsapp"
+                      name="whatsapp"
+                      copyNumbersOnly
+                      localization={"pt"}
+                      country={"br"}
+                      style={{
+                        width: "100%",
+                        border: "1px solid rgb(0,0,0,0.25)",
+                        borderRadius: "4px",
+
+                        borderColor:
+                          formik.touched.whatsapp &&
+                          Boolean(formik.errors.whatsapp) &&
+                          "#F32424",
+                      }}
+                      value={formik.values.whatsapp}
+                      onChange={(phoneNumber) => {
+                        formik.setFieldValue("whatsapp", phoneNumber);
+                      }}
+                      onBlur={formik.handleBlur}
+                      component={TextField}
+                    />
+                    {formik.touched.whatsapp && formik.errors.whatsapp ? (
+                      <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
+                        {formik.errors.whatsapp}
                       </div>
-                      {formik.touched.whatsapp && formik.errors.whatsapp ? (
-                        <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
-                          {formik.errors.whatsapp}
-                        </div>
-                      ) : null}
-                    </div>
+                    ) : null}
                   </Grid>
                 </Grid>
               </Box>

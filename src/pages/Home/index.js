@@ -7,7 +7,7 @@ import { Container } from "./styles";
 function Home() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    history.push("/clientes");
+    history.push("/produtos");
     setLoading(false);
   }, []);
 

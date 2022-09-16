@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
-import NumberFormat from "react-number-format";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
   Typography,
   Button,
   Box,
   Tabs,
+  Grid,
+  TextField,
+  MenuItem,
   Tab,
   IconButton,
   Divider,
@@ -20,21 +24,76 @@ import history from "../../../config/history";
 
 import { Container, ContentBody, ContentHeader } from "../styles";
 import { useParams } from "react-router-dom";
-import FormEditClient from "./EditClient";
 
 function EditClient() {
   const [loading, setLoading] = useState(false);
+  const formEl = useRef(null);
+
   const params = useParams();
   const { id } = params;
-  const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  function handleLoad() {
-    setLoading(false);
+  // get list users
+  async function loadDataTypeUser() {
+    try {
+      const { data } = await Api.get(`/userType/${id}`);
+      formik.setFieldValue("id", data.id);
+      formik.setFieldValue("description", data.description);
+      formik.setFieldValue("status", data.status);
+    } catch (err) {
+      toast(
+        "error",
+        "Erro",
+        err?.response.data?.message || "Não foi possível carregar os usuários"
+      );
+    } finally {
+      setLoading();
+    }
   }
+
+  const formik = useFormik({
+    initialValues: {
+      description: "",
+      status: 0,
+    },
+    validationSchema: Yup.object({
+      description: Yup.string().required("Campo Obrigatório"),
+      status: Yup.string().required("Campo Obrigatório"),
+    }),
+    onSubmit: async (values) => {
+      handleSubmit(values);
+    },
+  });
+
+  function handleSubmit(values) {
+    const data = {
+      description: values.description,
+      status: values.status,
+    };
+    try {
+      Api.patch(`/userType/${id}`, data)
+        .then((response) => {
+          if (response.status === 201) {
+            toast.success("Tipo de cliente alterado com sucesso!");
+            formEl.current.reset();
+            history.goBack();
+          }
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message);
+        });
+    } catch (error) {
+      if (error.response) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Error no sistema! Tente novamente mais tarde.");
+      }
+    }
+  }
+
+  useEffect(() => {
+    loadDataTypeUser();
+  }, [id]);
+
   return (
     <>
       {loading ? (
@@ -65,7 +124,7 @@ function EditClient() {
                 lineheight: "43px",
               }}
             >
-              Cliente
+              Editar tipo de cliente
             </Typography>
 
             <div style={{ display: "flex" }}>
@@ -90,76 +149,98 @@ function EditClient() {
                   marginLeft: "20px",
                   borderRadius: "24px",
                 }}
-                type="submit"
-                // onClick={formik.handleSubmit}
+                onClick={formik.handleSubmit}
               >
                 Salvar
               </Button>
             </div>
           </ContentHeader>
           <ContentBody>
-            <Box
-              sx={{ borderBottom: 1, borderColor: "divider", width: "100%" }}
+            <form
+              ref={formEl}
+              noValidate
+              autoComplete={"off"}
+              style={{ width: "100%" }}
             >
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="transparent"
-                textColor="secondary"
+              <Typography
+                variant="h2"
+                color="secondary"
+                style={{ fontWeight: "bold", marginBottom: "20px" }}
               >
-                <Tab label="Cliente" {...a11yProps(0)} />
-                <Tab label="Carteira virtual" {...a11yProps(1)} />
-                <Tab label="Histórico de pedidos" {...a11yProps(2)} />
-              </Tabs>
-              <Divider />
-            </Box>
-            <TabPanel value={value} index={0}>
-              <FormEditClient
-                id={id}
-                loading={loading}
-                setLoading={() => handleLoad()}
-              />
-            </TabPanel>
-            <TabPanel value={value} index={1}></TabPanel>
-            <TabPanel value={value} index={2}></TabPanel>
+                Dados do tipo
+              </Typography>
+
+              <Box container sx={{ display: "flex", flexWrap: "wrap" }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={4} sm={6}>
+                    <Typography>ID*</Typography>
+                    <TextField
+                      size="small"
+                      id="id"
+                      name="ID*"
+                      disabled
+                      placeholder="id"
+                      variant="outlined"
+                      autoComplete="text"
+                      value={formik.values.id}
+                      onChange={formik.handleChange}
+                      error={formik.touched.id && Boolean(formik.errors.id)}
+                      helperText={formik.touched.id && formik.errors.id}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4} sm={6}>
+                    <Typography>Descrição*</Typography>
+                    <TextField
+                      required
+                      size="small"
+                      id="description"
+                      name="description"
+                      variant="outlined"
+                      autoComplete="text"
+                      placeholder="Descrição da categoria"
+                      value={formik.values.description}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.description &&
+                        Boolean(formik.errors.description)
+                      }
+                      helperText={
+                        formik.touched.description && formik.errors.description
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4} sm={6}>
+                    <Typography>Status*</Typography>
+                    <TextField
+                      select
+                      size="small"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="status"
+                      name="status"
+                      value={formik.values.status}
+                      autoFocus
+                      onChange={formik.handleChange}
+                    >
+                      <MenuItem value={0} key={0}>
+                        {"Ativo"}
+                      </MenuItem>
+                      <MenuItem value={1} key={1}>
+                        {"Inativo"}
+                      </MenuItem>
+                    </TextField>
+                  </Grid>
+                </Grid>
+              </Box>
+            </form>
           </ContentBody>
         </Container>
       )}
     </>
   );
 }
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
 
 export default EditClient;

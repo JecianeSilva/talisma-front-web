@@ -21,7 +21,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import history from "../../config/history";
 import { localization } from "../../utils/location-ptBr";
-import { Button, Divider } from "@material-ui/core";
+import { Button, Divider, Icon } from "@material-ui/core";
 import { Alert } from "@mui/material";
 
 const tableIcons = {
@@ -56,6 +56,7 @@ function Table({
   data,
   options,
   pathname,
+  pathname2,
   title,
   selectable,
   onDelete,
@@ -82,11 +83,14 @@ function Table({
         localization={localization}
         options={{
           pageSize: data && data.length < perPage ? data.length : perPage,
-          // selection: selectable,
-          showTitle: true,
-          search: false,
+          selection: selectable,
+          showTitle: false,
+          toolbar: true,
+          paging: false,
           pageSizeOptions: [10],
           actionsColumnIndex: -1,
+          headerStyle: { color: "#4F4F4F", fontWeight: "bold" },
+          rowStyle: { color: "#8C8C8C" },
           ...options,
         }}
         actions={
@@ -98,14 +102,15 @@ function Table({
                   : {
                       icon: tableIcons.View,
                       tooltip: "View",
+                      position: "row",
                       onClick: (event, rowData) => {
                         event.preventDefault();
                         rowData.length > 0
                           ? history.push(
-                              `${pathname}/view-${pathname}/${rowData[0].id}`
+                              `${pathname}/view-${pathname2}/${rowData[0].id}`
                             )
                           : history.push(
-                              `${pathname}/view-${pathname}/${rowData.id}`
+                              `${pathname}/view-${pathname2}/${rowData.id}`
                             );
                       },
                       disabled: disableEditIcon,
@@ -115,14 +120,15 @@ function Table({
                   : {
                       icon: tableIcons.Edit,
                       tooltip: "Editar",
+                      position: "row",
                       onClick: (event, rowData) => {
                         event.preventDefault();
                         rowData.length > 0
                           ? history.push(
-                              `${pathname}/editar-${pathname}/${rowData[0].id}`
+                              `${pathname}/editar-${pathname2}/${rowData[0].id}`
                             )
                           : history.push(
-                              `${pathname}/editar-${pathname}/${rowData.id}`
+                              `${pathname}/editar-${pathname2}/${rowData.id}`
                             );
                       },
                       disabled: disableEditIcon,
@@ -145,26 +151,43 @@ function Table({
         onSelectionChange={(rows) =>
           rows.length > 1 ? setDisableEditIcon(true) : setDisableEditIcon(false)
         }
-        component={{
+        components={{
           Toolbar: (props) => (
             <>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "10px",
-                }}
-              >
-                <div style={{ width: "13rem", color: "#D68E70" }}>{title}</div>
+              {!title ? null : (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "13rem",
+                      fontSize: "16px",
+                      padding: "10px 0px",
+                      color: "#D68E70",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {title}
+                  </div>
 
-                <Button
-                  style={{ height: "fit-content", borderRadius: "24px" }}
+                  {/* <Button
+                  style={{
+                    height: "fit-content",
+                    borderRadius: "24px",
+                    color: "#4F4F4F",
+                  }}
                   variant="outlined"
                 >
+                  <FilterList color="#4F4F4F" />
                   Filtros
-                </Button>
-              </div>
+                </Button> */}
+                </div>
+              )}
               <Divider />
             </>
           ),

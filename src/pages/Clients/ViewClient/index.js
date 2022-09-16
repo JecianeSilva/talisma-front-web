@@ -1,6 +1,5 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { toast } from "react-toastify";
-import NumberFormat from "react-number-format";
 import {
   Typography,
   Button,
@@ -10,7 +9,7 @@ import {
   IconButton,
   Divider,
 } from "@material-ui/core";
-import { ArrowBackIos, Search } from "@material-ui/icons";
+import { ArrowBackIos } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import Api from "../../../config/api";
 
@@ -20,17 +19,15 @@ import history from "../../../config/history";
 
 import { Container, ContentBody, ContentHeader } from "../styles";
 import { useParams } from "react-router-dom";
-import FormEditClient from "./EditClient";
+import FormViewClient from "./ViewClient";
 import CardVirtual from "./CardVirtual";
 import StockHistory from "./StockHistory";
 
-function EditClient() {
+function ViewClient() {
   const params = useParams();
-  const formEl = useRef(null);
 
   const { id } = params;
   const [value, setValue] = React.useState(0);
-  const [callHandleSubmit, setCallHandleSubmit] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -71,30 +68,15 @@ function EditClient() {
               variant="contained"
               size="large"
               style={{
-                backgroundColor: value === 0 ? "#F35457" : "#8e8e8e",
-                color: "#FFF",
-                borderRadius: "24px",
-              }}
-              disabled={value !== 0}
-              onClick={() => history.goBack()}
-            >
-              Descartar
-            </Button>
-            <Button
-              ref={formEl}
-              variant="contained"
-              size="large"
-              style={{
-                backgroundColor: value === 0 ? "#21AB69" : "#8e8e8e",
+                backgroundColor: value === 0 ? "#C14979" : "#8e8e8e",
                 color: "#FFF",
                 marginLeft: "20px",
                 borderRadius: "24px",
               }}
-              type="submit"
+              onClick={() => history.push(`/clientes/editar-clientes/${id}`)}
               disabled={value !== 0}
-              onClick={() => setCallHandleSubmit(true)}
             >
-              Salvar
+              Editar
             </Button>
           </div>
         </ContentHeader>
@@ -113,12 +95,7 @@ function EditClient() {
             <Divider />
           </Box>
           <TabPanel value={value} index={0} style={{ padding: "1.5rem 1rem" }}>
-            <FormEditClient
-              id={id}
-              formEl={formEl}
-              callHandleSubmit={callHandleSubmit}
-              setCallHandleSubmit={setCallHandleSubmit}
-            />
+            <FormViewClient id={id} />
           </TabPanel>
           <TabPanel
             value={value}
@@ -152,7 +129,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box container>
+        <Box>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -173,4 +150,4 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export default EditClient;
+export default ViewClient;

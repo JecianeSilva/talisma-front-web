@@ -25,9 +25,23 @@ function Clients() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   // const [count, setCount] = useState();
-  const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const columnsTable = [
+    {
+      title: "ID",
+      field: "id",
+      cellStyle: {
+        whiteSpace: "nowrap",
+      },
+    },
+    {
+      title: "Referência",
+      field: "id",
+      cellStyle: {
+        whiteSpace: "nowrap",
+      },
+    },
     {
       title: "Nome",
       field: "name",
@@ -36,7 +50,7 @@ function Clients() {
       },
     },
     {
-      title: "Classificação",
+      title: "Categoria",
       field: "type",
       cellStyle: {
         whiteSpace: "nowrap",
@@ -44,62 +58,24 @@ function Clients() {
       },
     },
     {
-      title: "Email",
-      field: "email",
+      title: "Valor atual",
+      field: "price",
       cellStyle: {
         whiteSpace: "nowrap",
       },
     },
+
     {
-      title: "Telefone",
-      field: "phone",
-      cellStyle: {
-        whiteSpace: "nowrap",
-        minWidth: 150,
-      },
-      render: (rowData) => {
-        return rowData.phone &&
-          rowData.phone.replace(/[^0-9]+/g, "").length < 13 ? (
-          <NumberFormat
-            value={rowData.phone}
-            displayType={"text"}
-            format="+##(##) ####-####"
-          />
-        ) : (
-          <NumberFormat
-            value={rowData.phone}
-            displayType={"text"}
-            format="+##(##) #####-####"
-          />
-        );
-      },
-    },
-    {
-      title: "WhatsApp",
-      field: "whatsapp",
+      title: "Estoque por",
+      field: "stock",
       cellStyle: {
         whiteSpace: "nowrap",
         minWidth: 150,
       },
-      render: (rowData) => {
-        return rowData.whatsapp && rowData.whatsapp.length < 16 ? (
-          <NumberFormat
-            value={rowData.whatsapp}
-            displayType={"text"}
-            format="+##(##) ####-####"
-          />
-        ) : (
-          <NumberFormat
-            value={rowData.whatsapp}
-            displayType={"text"}
-            format="+##(##) #####-####"
-          />
-        );
-      },
     },
     {
-      title: "Nascimento",
-      field: "birthday",
+      title: "Qnt em estoque",
+      field: "quantity",
       cellStyle: {
         whiteSpace: "nowrap",
         minWidth: 150,
@@ -116,14 +92,117 @@ function Clients() {
     },
   ];
 
-  // get list users
-  async function loadDataUsers() {
+  // get list products
+  async function loadDataProducts() {
     try {
-      const { data } = await Api.get("/user");
+      // const { data } = await Api.get("/product");
       // const _infos = headers["content-range"].split("/");
       // const count = _infos[_infos.length - 1].split("-")[1];
       // setCount(count);
-      setUsers(data);
+
+      const data = [
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+        {
+          id: "000000000",
+          ref: "000000000",
+          name: "Lorem ipsum",
+          type: "Brincos",
+          price: "R$ 0,00",
+          stck: "Cor",
+          quantity: "100",
+          status: 0,
+        },
+      ];
+      setProducts(data);
     } catch (err) {
       toast(
         "error",
@@ -136,7 +215,7 @@ function Clients() {
   }
 
   useEffect(() => {
-    loadDataUsers();
+    loadDataProducts();
   }, []);
 
   return (
@@ -153,7 +232,7 @@ function Clients() {
                 marginRight: "40px",
               }}
             >
-              Clientes
+              Produtos
             </Typography>
 
             <TextField
@@ -183,19 +262,18 @@ function Clients() {
                   color: "#FFF",
                   borderRadius: "24px",
                 }}
-                onClick={() => history.push("/clientes/novo-cliente")}
+                onClick={() => history.push("/produtos/novo-produto")}
               >
                 Adicionar
               </Button>
             </div>
           </ContentHeader>
           <Table
-            pathname="clientes"
-            pathname2="clientes"
-            title="Clientes"
+            pathname="produtos"
+            pathname2="produtos"
             perPage={10}
             columns={columnsTable}
-            data={users}
+            data={products}
             selectable
             hideDeleteAction
           />

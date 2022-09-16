@@ -45,7 +45,7 @@ export const ContentBody = styled.div`
   margin: 0px 0px 44px 0px;
   box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.03);
   border-radius: 8px 5px 8px 8px;
-  padding: 1rem;
+  padding: 0rem 1rem 1rem 1rem;
 
   color: #cecece;
   .MuiTypography-body1 {
@@ -73,5 +73,12 @@ export const ContentBody = styled.div`
   #simple-tabpanel-1 .MuiPaper-elevation2,
   #simple-tabpanel-2 .MuiPaper-elevation2 {
     box-shadow: none !important;
+  }
+
+  .file-name {
+    background: #ffffff;
+    border-radius: 8px;
+    width: 220px;
+    height: 220px;
   }
 `;

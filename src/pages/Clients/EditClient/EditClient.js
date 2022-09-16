@@ -10,10 +10,13 @@ import {
   TextField,
   MenuItem,
   Grid,
+  Select,
+  FormControl,
 } from "@material-ui/core";
 import { ArrowBackIos, Search, SearchOutlined } from "@material-ui/icons";
 import InputMask from "react-input-mask";
-
+import ReactPhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import Loading from "../../../components/Loading";
 import history from "../../../config/history";
 
@@ -22,19 +25,18 @@ import axios from "axios";
 import { getDate } from "../../../utils";
 import Api from "../../../config/api";
 
-function FormEditClient({ id, formEl }) {
+function FormEditClient({ id, formEl, callHandleSubmit, setCallHandleSubmit }) {
   const [loading, setLoading] = useState(true);
   const [userTypes, setUserTypes] = useState();
-  const [value, setValue] = useState("");
-  const [value2, setValue2] = useState("");
+
   const formik = useFormik({
     initialValues: {
       name: "",
       birthday: "",
       document: "",
       status: "",
-      categories: "",
-      userType_id: "",
+      categories: 1,
+      userType: "",
 
       email: "",
       phone: "",
@@ -56,14 +58,18 @@ function FormEditClient({ id, formEl }) {
         .required("Campo Obrigatório")
         .min(11, "Dado inválido"),
       userType: Yup.string().required("Campo Obrigatório"),
-      categories: Yup.string().required("Campo Obrigatório"),
-      status: Yup.string().required("Campo Obrigatório"),
+      categories: Yup.number().required("Campo Obrigatório"),
+      status: Yup.number().required("Campo Obrigatório"),
 
       email: Yup.string("E-mail")
         .email("Digite um endereço de e-mail válido.")
         .required("Campo Obrigatório"),
-      phone: Yup.string().required("Campo Obrigatório"),
-      whatsapp: Yup.string().required("Campo Obrigatório"),
+      phone: Yup.string()
+        .required("Campo Obrigatório")
+        .min(12, "Dado inválido"),
+      whatsapp: Yup.string()
+        .required("Campo Obrigatório")
+        .min(12, "Dado inválido"),
 
       address_code: Yup.number().required("Campo Obrigatório"),
       address_state: Yup.string().required("Campo Obrigatório"),
@@ -75,10 +81,16 @@ function FormEditClient({ id, formEl }) {
       address_complement: Yup.string(),
     }),
     onSubmit: async (values) => {
-      console.log(values);
       handleSubmit(values);
     },
   });
+
+  useEffect(() => {
+    if (callHandleSubmit) {
+      formik.handleSubmit();
+      setCallHandleSubmit(false);
+    }
+  }, [callHandleSubmit]);
 
   async function consultaCep(cep) {
     if (cep) {
@@ -118,7 +130,12 @@ function FormEditClient({ id, formEl }) {
       const { data } = await Api.get(`/user/${id}`);
       const responseUserType = await Api.get(`/userType`);
       if (responseUserType) {
-        setUserTypes(responseUserType.data);
+        setUserTypes(
+          responseUserType.data.map((item) => ({
+            id: item.id,
+            description: item.description,
+          }))
+        );
       }
       formik.setFieldValue("id", data.id);
       formik.setFieldValue("name", data.name);
@@ -127,13 +144,10 @@ function FormEditClient({ id, formEl }) {
       formik.setFieldValue("create_at", getDate(data.createdAt));
       formik.setFieldValue("status", data.status);
       // formik.setFieldValue("categories", data.categories);
-      formik.setFieldValue("type", data.userType_id);
+      formik.setFieldValue("userType", data.userType_id?.id);
       formik.setFieldValue("email", data.email);
       formik.setFieldValue("phone", data.phone);
-      setValue(data.phone);
       formik.setFieldValue("whatsapp", data.whatsapp);
-      setValue2(data.phone);
-
       formik.setFieldValue("address_code", data.address[0].zipcode);
       formik.setFieldValue("address_city", data.address[0].city);
       formik.setFieldValue("address_state", data.address[0].state);
@@ -169,26 +183,26 @@ function FormEditClient({ id, formEl }) {
       email: values.email,
       document: values.document,
       birthday: values.birthday,
-      userType: values.type,
+      userType_id: values.userType,
       phone: values.phone,
       whatsapp: values.whatsapp,
       status: values.status,
       // categories: values.categories,
 
-      address_code: values.address_code,
-      address_city: values.address_city,
-      address_state: values.address_state,
-      address_street: values.address_street,
-      address_district: values.address_district,
-      address_reference: values.address_reference,
-      address_number: values.address_number,
-      address_complement: values.address_complement,
+      // address_code: values.address_code,
+      // address_city: values.address_city,
+      // address_state: values.address_state,
+      // address_street: values.address_street,
+      // address_district: values.address_district,
+      // address_reference: values.address_reference,
+      // address_number: values.address_number,
+      // address_complement: values.address_complement,
     };
     try {
       Api.patch(`/user/${id}`, data)
         .then((response) => {
-          if (response.status === 201) {
-            toast.success("Cliente cadastrado com sucesso!");
+          if (response.status === 200) {
+            toast.success("Cliente alterado com sucesso!");
             formEl.current.reset();
             history.goBack();
           }
@@ -217,7 +231,6 @@ function FormEditClient({ id, formEl }) {
           >
             Dados Pessoais
           </Typography>
-
           <Box container sx={{ display: "flex", flexWrap: "wrap" }}>
             <Grid container spacing={2}>
               <Grid item xs={12} md={3} sm={6}>
@@ -369,36 +382,39 @@ function FormEditClient({ id, formEl }) {
                   autoFocus
                   onChange={formik.handleChange}
                 >
-                  <MenuItem value={1} key={"categoria 1"}>
+                  <MenuItem value={1} key={1}>
                     {"Categoria 1"}
+                  </MenuItem>
+                  <MenuItem value={2} key={2}>
+                    {"Categoria 2"}
                   </MenuItem>
                 </TextField>
               </Grid>
               <Grid item xs={12} md={3} sm={6}>
                 <Typography>Tipo*</Typography>
-                <TextField
-                  select
-                  size="small"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="type"
-                  name="type"
-                  value={formik.values.type}
-                  autoFocus
-                  onChange={formik.handleChange}
-                >
-                  {userTypes &&
-                    userTypes.map((item) => (
-                      <MenuItem value={2} key={item.id}>
-                        {item.description}
-                      </MenuItem>
-                    ))}
-                </TextField>
+                {!loading && (
+                  <TextField
+                    select
+                    size="small"
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="userType"
+                    name="userType"
+                    value={formik.values.userType}
+                    onChange={formik.handleChange}
+                  >
+                    {userTypes &&
+                      userTypes.map((item) => (
+                        <MenuItem value={item.id} key={item.id}>
+                          {item.description}
+                        </MenuItem>
+                      ))}
+                  </TextField>
+                )}
               </Grid>
             </Grid>
           </Box>
-
           <Typography
             variant="h2"
             color="secondary"
@@ -406,7 +422,6 @@ function FormEditClient({ id, formEl }) {
           >
             Contato
           </Typography>
-
           <Box sx={{ display: "flex", flexWrap: "wrap" }}>
             <Grid container spacing={2}>
               <Grid item xs={3}>
@@ -445,89 +460,74 @@ function FormEditClient({ id, formEl }) {
                 />
               </Grid>
               <Grid item xs={3}>
-                <div>
-                  <Typography>Telefone*</Typography>
-                  <div>
-                    <InputMask
-                      required
-                      className={"MuiInputBase-input"}
-                      style={{
-                        width: "93%",
-                        padding: "8.5px 10px",
-                        border: "1px solid rgb(0,0,0,0.25)",
-                        borderRadius: "4px",
-                        minHeight: "20px",
-                        borderColor:
-                          formik.touched.phone &&
-                          Boolean(formik.errors.phone) &&
-                          "#F32424",
-                      }}
-                      id="phone"
-                      name="phone"
-                      mask={
-                        value.length < 15 && parseInt(value[2]) !== 9
-                          ? "(99) 9999-9999"
-                          : "(99) 99999-9999"
-                      }
-                      value={value}
-                      onChange={(e) => {
-                        setValue(e.target.value.replace(/[^0-9,.]+/g, ""));
-                        formik.setFieldValue("phone", e.target.value);
-                      }}
-                    />
+                <Typography>Telefone*</Typography>
+                <ReactPhoneInput
+                  id="phone"
+                  name="phone"
+                  localization={"pt"}
+                  country={"br"}
+                  value={formik.values.phone}
+                  onChange={(value, country) => {
+                    console.log(value, country);
+                    formik.setFieldValue("phone", value);
+                  }}
+                  style={{
+                    width: "100%",
+                    border: "1px solid rgb(0,0,0,0.25)",
+                    borderRadius: "4px",
+
+                    borderColor:
+                      formik.touched.document &&
+                      Boolean(formik.errors.document) &&
+                      "#F32424",
+                  }}
+                  onBlur={formik.handleBlur}
+                  component={TextField}
+                  error={formik.touched.phone && Boolean(formik.errors.phone)}
+                  helperText={formik.touched.phone && formik.errors.phone}
+                />
+                {formik.touched.phone && formik.errors.phone ? (
+                  <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
+                    {formik.errors.phone}
                   </div>
-                  {formik.touched.phone && formik.errors.phone ? (
-                    <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
-                      {formik.errors.phone}
-                    </div>
-                  ) : null}
-                </div>
+                ) : null}
               </Grid>
               <Grid item xs={3}>
-                <div>
-                  <Typography>Whatsapp*</Typography>
-                  <div>
-                    <InputMask
-                      required
-                      className={"MuiInputBase-input"}
-                      style={{
-                        width: "93%",
-                        padding: "8.5px 10px",
-                        border: "1px solid rgb(0,0,0,0.25)",
-                        borderRadius: "4px",
-                        minHeight: "20px",
-                        borderColor:
-                          formik.touched.whatsapp &&
-                          Boolean(formik.errors.whatsapp) &&
-                          "#F32424",
-                      }}
-                      id="whatsapp"
-                      name="whatsapp"
-                      mask={
-                        value2.length < 15 && parseInt(value2[2]) !== 9
-                          ? "(99) 9999-9999"
-                          : "(99) 99999-9999"
-                      }
-                      value={value2}
-                      onChange={(e) => {
-                        setValue2(e.target.value.replace(/[^0-9,.]+/g, ""));
-                        formik.setFieldValue(
-                          "whatsapp",
-                          e.target.value.replace(/[^0-9,.]+/g, "")
-                        );
-                      }}
-                    />
+                <Typography>Whatsapp*</Typography>
+                <ReactPhoneInput
+                  id="whatsapp"
+                  name="whatsapp"
+                  localization={"pt"}
+                  country={"br"}
+                  style={{
+                    width: "100%",
+                    border: "1px solid rgb(0,0,0,0.25)",
+                    borderRadius: "4px",
+
+                    borderColor:
+                      formik.touched.document &&
+                      Boolean(formik.errors.document) &&
+                      "#F32424",
+                  }}
+                  value={formik.values.whatsapp}
+                  onChange={(phoneNumber) => {
+                    formik.setFieldValue("whatsapp", phoneNumber);
+                  }}
+                  onBlur={formik.handleBlur}
+                  component={TextField}
+                  error={
+                    formik.touched.whatsapp && Boolean(formik.errors.whatsapp)
+                  }
+                  helperText={formik.touched.whatsapp && formik.errors.whatsapp}
+                />
+                {formik.touched.whatsapp && formik.errors.whatsapp ? (
+                  <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
+                    {formik.errors.whatsapp}
                   </div>
-                  {formik.touched.whatsapp && formik.errors.whatsapp ? (
-                    <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
-                      {formik.errors.whatsapp}
-                    </div>
-                  ) : null}
-                </div>
+                ) : null}
               </Grid>
             </Grid>
           </Box>
-
           <Typography
             variant="h2"
             color="secondary"
@@ -535,7 +535,6 @@ function FormEditClient({ id, formEl }) {
           >
             Endereço
           </Typography>
-
           <Box sx={{ display: "flex", flexWrap: "wrap" }}>
             <Grid container spacing={2}>
               <Grid item xs={3}>
@@ -750,25 +749,7 @@ function FormEditClient({ id, formEl }) {
                 />
               </Grid>
             </Grid>
-          </Box>
-
-          <Button
-            variant="contained"
-            size="large"
-            style={{
-              position: "fixed",
-              top: "2.7rem",
-              right: "2.5rem",
-              backgroundColor: "#21AB69",
-              color: "#FFF",
-              marginLeft: "20px",
-              borderRadius: "24px",
-            }}
-            type="submit"
-            onClick={formik.handleSubmit}
-          >
-            Salvar
-          </Button>
+          </Box>{" "}
         </form>
       )}
     </>

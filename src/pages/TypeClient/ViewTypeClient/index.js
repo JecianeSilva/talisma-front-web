@@ -1,67 +1,55 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import {
-  Box,
   Typography,
   Button,
-  IconButton,
+  Box,
+  Tabs,
+  Grid,
   TextField,
   MenuItem,
-  Grid,
+  Tab,
+  IconButton,
+  Divider,
 } from "@material-ui/core";
 import { ArrowBackIos } from "@material-ui/icons";
+import Api from "../../../config/api";
 
 import Loading from "../../../components/Loading";
+
 import history from "../../../config/history";
 
 import { Container, ContentBody, ContentHeader } from "../styles";
-import Api from "../../../config/api";
+import { useParams } from "react-router-dom";
 
-function TypeClients() {
+function ViewTypeClient() {
   const [loading, setLoading] = useState(false);
+  const [userType, setUserType] = useState();
   const formEl = useRef(null);
 
-  const formik = useFormik({
-    initialValues: {
-      description: "",
-      status: 0,
-    },
-    validationSchema: Yup.object({
-      description: Yup.string().required("Campo Obrigatório"),
-      status: Yup.string().required("Campo Obrigatório"),
-    }),
-    onSubmit: async (values) => {
-      handleSubmit(values);
-    },
-  });
+  const params = useParams();
+  const { id } = params;
 
-  function handleSubmit(values) {
-    const data = {
-      description: values.description,
-      status: values.status,
-    };
+  // get list users
+  async function loadDataTypeUser() {
+    setLoading(true);
     try {
-      Api.post("/userType", data)
-        .then((response) => {
-          if (response.status === 201) {
-            toast.success("Tipo de cliente cadastrado com sucesso!");
-            formEl.current.reset();
-            history.goBack();
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response.data.message);
-        });
-    } catch (error) {
-      if (error.response) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Error no sistema! Tente novamente mais tarde.");
-      }
+      const { data } = await Api.get(`/userType/${id}`);
+      setUserType(data);
+    } catch (err) {
+      toast(
+        "error",
+        "Erro",
+        err?.response.data?.message || "Não foi possível carregar os usuários"
+      );
+    } finally {
+      setLoading(false);
     }
   }
+
+  useEffect(() => {
+    loadDataTypeUser();
+  }, [id]);
 
   return (
     <>
@@ -93,7 +81,7 @@ function TypeClients() {
                 lineheight: "43px",
               }}
             >
-              Cadastrar tipo de cliente
+              Tipo de cliente
             </Typography>
 
             <div style={{ display: "flex" }}>
@@ -101,26 +89,14 @@ function TypeClients() {
                 variant="contained"
                 size="large"
                 style={{
-                  backgroundColor: "#F35457",
-                  color: "#FFF",
-                  borderRadius: "24px",
-                }}
-                onClick={() => history.goBack()}
-              >
-                Descartar
-              </Button>
-              <Button
-                variant="contained"
-                size="large"
-                style={{
-                  backgroundColor: "#21AB69",
+                  backgroundColor: "#C14979",
                   color: "#FFF",
                   marginLeft: "20px",
                   borderRadius: "24px",
                 }}
-                onClick={formik.handleSubmit}
+                onClick={() => history.push(`/tipos-cliente/editar-tipo/${id}`)}
               >
-                Salvar
+                Editar
               </Button>
             </div>
           </ContentHeader>
@@ -151,13 +127,11 @@ function TypeClients() {
                       placeholder="id"
                       variant="outlined"
                       autoComplete="text"
-                      value={formik.values.id}
-                      onChange={formik.handleChange}
-                      error={formik.touched.id && Boolean(formik.errors.id)}
-                      helperText={formik.touched.id && formik.errors.id}
+                      value={userType?.id}
                       fullWidth
                     />
                   </Grid>
+
                   <Grid item xs={12} md={4} sm={6}>
                     <Typography>Descrição*</Typography>
                     <TextField
@@ -168,20 +142,14 @@ function TypeClients() {
                       variant="outlined"
                       autoComplete="text"
                       placeholder="Descrição da categoria"
-                      value={formik.values.description}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.description &&
-                        Boolean(formik.errors.description)
-                      }
-                      helperText={
-                        formik.touched.description && formik.errors.description
-                      }
+                      value={userType?.description}
                       fullWidth
                     />
                   </Grid>
+
                   <Grid item xs={12} md={4} sm={6}>
                     <Typography>Status*</Typography>
+
                     <TextField
                       select
                       size="small"
@@ -190,9 +158,8 @@ function TypeClients() {
                       fullWidth
                       id="status"
                       name="status"
-                      value={formik.values.status}
+                      value={userType?.status}
                       autoFocus
-                      onChange={formik.handleChange}
                     >
                       <MenuItem value={0} key={0}>
                         {"Ativo"}
@@ -212,4 +179,4 @@ function TypeClients() {
   );
 }
 
-export default TypeClients;
+export default ViewTypeClient;

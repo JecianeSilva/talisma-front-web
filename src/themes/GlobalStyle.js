@@ -47,4 +47,31 @@ export const GlobalStyle = createGlobalStyle`
   button {
     cursor: pointer;
   }
+
+
+  //TABLE ---------------/
+  .MuiTableRow-root:hover{
+    background-color: #FFE9F2
+  }
+  .Mui-checked MuiIconButton-colorSecondary{
+    color: #C14979
+  }
+
+  .MuiStepConnector-root{
+    top: 18px !important;
+  }
+  .MuiStepConnector-root span{
+    border-top-width: 3px;
+  }
+  .MuiStepConnector-active span, .MuiStepConnector-completed span{
+    border-top-color: #C14979
+  }
+  .MuiStepper-root {
+    padding: 6px 12px;
+  }
+  .MuiStepLabel-label.MuiStepLabel-alternativeLabel{
+    margin-top: 5px;
+    font-size: 10px;
+
+  }
 `;
