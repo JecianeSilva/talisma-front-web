@@ -141,7 +141,6 @@ function FormCharacter({
                   required
                   size="small"
                   id="ref"
-                  placeholder="000000"
                   name="ref"
                   variant="outlined"
                   autoComplete="text"

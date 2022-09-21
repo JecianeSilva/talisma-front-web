@@ -72,6 +72,5 @@ export const GlobalStyle = createGlobalStyle`
   .MuiStepLabel-label.MuiStepLabel-alternativeLabel{
     margin-top: 5px;
     font-size: 10px;
-
   }
 `;

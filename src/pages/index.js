@@ -1,8 +1,10 @@
 import { lazy } from "react";
 
-// pages clientes
 const Products = lazy(() => import("./Products"));
 const NewProduct = lazy(() => import("./Products/NewProduct"));
+const EditProduct = lazy(() => import("./Products/EditProduct"));
+const ViewProduct = lazy(() => import("./Products/ViewProduct"));
+// pages clientes
 const Clients = lazy(() => import("./Clients"));
 const NewClient = lazy(() => import("./Clients/NewClient"));
 const EditClient = lazy(() => import("./Clients/EditClient"));
@@ -26,6 +28,18 @@ export const listRoutes = [
     private: true,
     path: "/produtos/novo-produto",
     component: NewProduct,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/produtos/editar-produtos/:id",
+    component: EditProduct,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/produtos/view-produtos/:id",
+    component: ViewProduct,
   },
 
   // pages Cliente

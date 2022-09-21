@@ -24,25 +24,18 @@ import axios from "axios";
 import { getDate } from "../../../utils";
 import Api from "../../../config/api";
 
+import { ReactComponent as imageUpload } from "../../../assets/icons/image-upload.svg";
+import { ReactComponent as imageSwap } from "../../../assets/icons/image-swap.svg";
 import { Close } from "@material-ui/icons";
-
 import CardImage from "../../../components/CardImage";
 
-function FormProduct({
-  id,
-  formEl,
-  value,
-  formik,
-  loading,
-  callHandleSubmit,
-  setCallHandleSubmit,
-}) {
+function FormProduct({ id, data, value, loading }) {
   return (
     <>
       {loading ? (
         <Loading />
       ) : (
-        <form ref={formEl} noValidate autoComplete={"off"}>
+        <form noValidate autoComplete={"off"}>
           <Typography
             variant="h2"
             color="secondary"
@@ -59,13 +52,10 @@ function FormProduct({
                   size="small"
                   id="id"
                   name="id"
-                  placeholder="000000"
                   variant="outlined"
                   autoComplete="text"
-                  value={formik.values.id}
-                  onChange={formik.handleChange}
-                  error={formik.touched.id && Boolean(formik.errors.id)}
-                  helperText={formik.touched.id && formik.errors.id}
+                  value={data?.id}
+                  disabled
                   fullWidth
                 />
               </Grid>
@@ -79,10 +69,8 @@ function FormProduct({
                   placeholder="Nome do produto"
                   variant="outlined"
                   autoComplete="text"
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  error={formik.touched.name && Boolean(formik.errors.name)}
-                  helperText={formik.touched.name && formik.errors.name}
+                  value={data?.name}
+                  disabled
                   fullWidth
                 />
               </Grid>
@@ -96,9 +84,9 @@ function FormProduct({
                   fullWidth
                   id="categories"
                   name="categories"
-                  value={formik.values.categories}
+                  disabled
+                  value={data?.categories}
                   autoFocus
-                  onChange={formik.handleChange}
                 >
                   <MenuItem value={1} key={1}>
                     {"Brinco"}
@@ -113,11 +101,11 @@ function FormProduct({
                   variant="outlined"
                   required
                   fullWidth
+                  disabled
                   id="type"
                   name="type"
-                  value={formik.values.type}
+                  value={data?.type}
                   autoFocus
-                  onChange={formik.handleChange}
                 >
                   <MenuItem value={1} key={1}>
                     {"Argola"}
@@ -131,12 +119,12 @@ function FormProduct({
                   size="small"
                   variant="outlined"
                   required
+                  disabled
                   fullWidth
-                  id="type"
-                  name="type"
-                  value={formik.values.type}
+                  id="banho"
+                  name="banho"
+                  value={data?.banho}
                   autoFocus
-                  onChange={formik.handleChange}
                 >
                   <MenuItem value={1} key={1}>
                     {"Folheado a ouro"}
@@ -151,11 +139,11 @@ function FormProduct({
                   variant="outlined"
                   required
                   fullWidth
+                  disabled
                   id="model"
                   name="model"
-                  value={formik.values.type}
+                  value={data?.model}
                   autoFocus
-                  onChange={formik.handleChange}
                 >
                   <MenuItem value={1} key={1}>
                     {"Masculino"}
@@ -163,23 +151,20 @@ function FormProduct({
                 </TextField>
               </Grid>
               <Grid item xs={12} md={2} sm={6}>
-                <Typography>Valor*</Typography>
+                <Typography>Valor</Typography>
                 <CurrencyTextField
                   size="small"
                   variant="outlined"
                   required
-                  placeholder="0,00"
                   id="price"
                   name="price"
-                  value={formik.values.price}
+                  disabled
+                  value={data?.price}
                   currencySymbol="R$"
                   decimalCharacter=","
                   digitGroupSeparator="."
                   maximumValue={9999999}
                   minimumValue={0}
-                  onChange={(e, price) => formik.setFieldValue("price", price)}
-                  error={formik.touched.price && Boolean(formik.errors.price)}
-                  helperText={formik.touched.price && formik.errors.price}
                 />
               </Grid>
 
@@ -192,10 +177,10 @@ function FormProduct({
                   required
                   fullWidth
                   id="status"
+                  disabled
                   name="status"
-                  value={formik.values.status}
+                  value={data?.status}
                   autoFocus
-                  onChange={formik.handleChange}
                 >
                   <MenuItem value={0} key={0}>
                     {"Ativo"}
@@ -206,17 +191,18 @@ function FormProduct({
                 </TextField>
               </Grid>
               <Grid item xs={12} md={2} sm={6}>
-                <Typography>Novidade?</Typography>
+                <Typography>Novidade?*</Typography>
                 <TextField
                   select
                   size="small"
                   variant="outlined"
+                  required
                   fullWidth
                   id="isNew"
                   name="isNew"
-                  value={formik.values.isNew}
+                  disabled
+                  value={data?.isNew}
                   autoFocus
-                  onChange={formik.handleChange}
                 >
                   <MenuItem value={true} key={true}>
                     {"Sim"}
@@ -233,18 +219,12 @@ function FormProduct({
                   size="small"
                   variant="outlined"
                   required
+                  disabled
                   fullWidth
                   id="dateLimit"
                   name="dateLimit"
                   autoFocus
-                  onChange={formik.handleChange}
-                  value={formik.values.dateLimit}
-                  error={
-                    formik.touched.dateLimit && Boolean(formik.errors.dateLimit)
-                  }
-                  helperText={
-                    formik.touched.dateLimit && formik.errors.dateLimit
-                  }
+                  value={data?.dateLimit}
                 />
               </Grid>
             </Grid>
@@ -257,10 +237,10 @@ function FormProduct({
             Imagens do produto
           </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
-            <CardImage image={formik.values.image1} formik={formik} index={1} />
-            <CardImage image={formik.values.image2} formik={formik} index={2} />
-            <CardImage image={formik.values.image3} formik={formik} index={3} />
-            <CardImage image={formik.values.image4} formik={formik} index={4} />
+            <CardImage image={data.image} index={1} />
+            <CardImage index={2} />
+            <CardImage index={3} />
+            <CardImage index={4} />
           </Box>
         </form>
       )}

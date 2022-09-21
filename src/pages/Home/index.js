@@ -13,9 +13,7 @@ function Home() {
 
   return (
     <>
-      <Container>
-        <Box>{loading && <Loading />}</Box>
-      </Container>
+      <Container>{loading && <Loading fullScreen />}</Container>
     </>
   );
 }

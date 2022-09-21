@@ -1,5 +1,3 @@
-const primary = "#70163A";
-
 export default {
   palette: {
     primary: {
@@ -19,6 +17,7 @@ export default {
     error: { main: "#FF3B3F" },
     text: {
       primary: "#70163A",
+      secondary: "#1F1F1F",
     },
     background: {
       default: "#FFFFFF",

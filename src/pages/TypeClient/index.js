@@ -3,28 +3,25 @@ import { toast } from "react-toastify";
 import NumberFormat from "react-number-format";
 import {
   Typography,
-  Button,
+  Box,
   InputAdornment,
   IconButton,
   TextField,
-  Divider,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 
 import Api from "../../config/api";
-
-import Loading from "../../components/Loading";
-
 import history from "../../config/history";
 
 import { Container, ContentHeader } from "./styles";
-import Input from "../../components/Input";
+
+import Loading from "../../components/Loading";
 import Table from "../../components/Table";
+import Button from "../../components/Button";
 
 function TypeClients() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  // const [count, setCount] = useState();
   const [userTypes, setUserTypes] = useState([]);
 
   const columnsTable = [
@@ -53,13 +50,10 @@ function TypeClients() {
     },
   ];
 
-  // get list users
+  // get list userTypes
   async function loadDataUserTypes() {
     try {
       const { data } = await Api.get("/userType");
-      // const _infos = headers["content-range"].split("/");
-      // const count = _infos[_infos.length - 1].split("-")[1];
-      // setCount(count);
       setUserTypes(data);
     } catch (err) {
       toast(
@@ -79,7 +73,7 @@ function TypeClients() {
   return (
     <>
       {loading ? (
-        <Loading size={3} color="#70163A" />
+        <Loading fullScreen />
       ) : (
         <Container>
           <ContentHeader>
@@ -94,7 +88,7 @@ function TypeClients() {
             </Typography>
 
             <TextField
-              id="search"
+              name="search"
               variant="outlined"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -109,22 +103,14 @@ function TypeClients() {
                 ),
               }}
             />
-            <div
-              style={{ display: "flex", flex: 1, justifyContent: "flex-end" }}
-            >
+            <Box display={"flex"} flex={1} justifyContent={"flex-end"}>
               <Button
-                variant="contained"
-                size="large"
-                style={{
-                  backgroundColor: "#70163A",
-                  color: "#FFF",
-                  borderRadius: "24px",
-                }}
-                onClick={() => history.push("/tipos-cliente/novo-tipo")}
-              >
-                Adicionar
-              </Button>
-            </div>
+                handleOnClick={() => history.push("/tipos-cliente/novo-tipo")}
+                title="Adicionar"
+                padding="0.5rem"
+                style={{ maxWidth: "9rem" }}
+              />
+            </Box>
           </ContentHeader>
           <Table
             pathname="tipos-cliente"

@@ -11,6 +11,7 @@ export const { Types, Creators } = createActions({
 const INITIAL_STATE = {
   access_token: null,
   signed: false,
+  loading: false,
 };
 
 const signInRequest = (state = INITIAL_STATE) => {

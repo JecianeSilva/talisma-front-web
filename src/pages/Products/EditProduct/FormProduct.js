@@ -24,8 +24,9 @@ import axios from "axios";
 import { getDate } from "../../../utils";
 import Api from "../../../config/api";
 
+import { ReactComponent as imageUpload } from "../../../assets/icons/image-upload.svg";
+import { ReactComponent as imageSwap } from "../../../assets/icons/image-swap.svg";
 import { Close } from "@material-ui/icons";
-
 import CardImage from "../../../components/CardImage";
 
 function FormProduct({
@@ -37,6 +38,19 @@ function FormProduct({
   callHandleSubmit,
   setCallHandleSubmit,
 }) {
+  const [image, setImage] = useState();
+
+  useEffect(() => {
+    if (callHandleSubmit) {
+      //formik.handleSubmit();
+      //setCallHandleSubmit(false);
+    }
+  }, [callHandleSubmit]);
+
+  const handleImage = (e) => {
+    setImage(URL.createObjectURL(e.target.files[0]));
+  };
+
   return (
     <>
       {loading ? (
@@ -57,15 +71,16 @@ function FormProduct({
                 <TextField
                   required
                   size="small"
-                  id="id"
-                  name="id"
-                  placeholder="000000"
+                  id="codeExt"
+                  name="codeExt"
                   variant="outlined"
                   autoComplete="text"
-                  value={formik.values.id}
+                  value={formik.values.codeExt}
                   onChange={formik.handleChange}
-                  error={formik.touched.id && Boolean(formik.errors.id)}
-                  helperText={formik.touched.id && formik.errors.id}
+                  error={
+                    formik.touched.codeExt && Boolean(formik.errors.codeExt)
+                  }
+                  helperText={formik.touched.codeExt && formik.errors.codeExt}
                   fullWidth
                 />
               </Grid>
@@ -163,12 +178,11 @@ function FormProduct({
                 </TextField>
               </Grid>
               <Grid item xs={12} md={2} sm={6}>
-                <Typography>Valor*</Typography>
+                <Typography>Valor</Typography>
                 <CurrencyTextField
                   size="small"
                   variant="outlined"
                   required
-                  placeholder="0,00"
                   id="price"
                   name="price"
                   value={formik.values.price}
@@ -206,11 +220,12 @@ function FormProduct({
                 </TextField>
               </Grid>
               <Grid item xs={12} md={2} sm={6}>
-                <Typography>Novidade?</Typography>
+                <Typography>Novidade?*</Typography>
                 <TextField
                   select
                   size="small"
                   variant="outlined"
+                  required
                   fullWidth
                   id="isNew"
                   name="isNew"
@@ -256,6 +271,7 @@ function FormProduct({
           >
             Imagens do produto
           </Typography>
+
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
             <CardImage image={formik.values.image1} formik={formik} index={1} />
             <CardImage image={formik.values.image2} formik={formik} index={2} />

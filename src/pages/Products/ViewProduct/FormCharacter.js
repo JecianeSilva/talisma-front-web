@@ -32,21 +32,7 @@ import Api from "../../../config/api";
 import MaterialTable from "material-table";
 import { localization } from "../../../utils/location-ptBr";
 
-function FormCharacter({
-  id,
-  formEl,
-  value,
-  formik,
-  loading,
-  callHandleSubmit,
-  setCallHandleSubmit,
-}) {
-  const [colorTable, setColorTable] = useState([]);
-  const [color, setColor] = useState();
-
-  const [tamTable, setTamTable] = useState([]);
-  const [tamanho, setTamanho] = useState();
-
+function FormCharacter({ id, data, value, loading }) {
   const colorTableColumn = [
     {
       title: "Descrição",
@@ -113,19 +99,12 @@ function FormCharacter({
     },
   ];
 
-  useEffect(() => {
-    if (callHandleSubmit && value === 1) {
-      //ormik.handleSubmit();
-      //setCallHandleSubmit(false);
-    }
-  }, [callHandleSubmit]);
-
   return (
     <>
       {loading ? (
         <Loading />
       ) : (
-        <form ref={formEl} noValidate autoComplete={"off"}>
+        <form noValidate autoComplete={"off"}>
           <Typography
             variant="h2"
             color="secondary"
@@ -141,14 +120,11 @@ function FormCharacter({
                   required
                   size="small"
                   id="ref"
-                  placeholder="000000"
                   name="ref"
                   variant="outlined"
                   autoComplete="text"
-                  value={formik.values.ref}
-                  onChange={formik.handleChange}
-                  error={formik.touched.ref && Boolean(formik.errors.ref)}
-                  helperText={formik.touched.ref && formik.errors.ref}
+                  value={data?.ref}
+                  disabled
                   fullWidth
                 />
               </Grid>
@@ -161,10 +137,8 @@ function FormCharacter({
                   name="peso"
                   variant="outlined"
                   autoComplete="text"
-                  value={formik.values.peso}
-                  onChange={formik.handleChange}
-                  error={formik.touched.peso && Boolean(formik.errors.peso)}
-                  helperText={formik.touched.peso && formik.errors.peso}
+                  value={data?.peso}
+                  disabled
                   fullWidth
                 />
               </Grid>
@@ -178,12 +152,8 @@ function FormCharacter({
                   placeholder="Detalhes do produto"
                   variant="outlined"
                   autoComplete="text"
-                  value={formik.values.details}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.details && Boolean(formik.errors.details)
-                  }
-                  helperText={formik.touched.details && formik.errors.details}
+                  value={data?.details}
+                  disabled
                   fullWidth
                 />
               </Grid>
@@ -209,8 +179,7 @@ function FormCharacter({
                     placeholder="Descrição da cor"
                     variant="outlined"
                     autoComplete="text"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
+                    disabled
                     fullWidth
                   />
                 </Grid>
@@ -225,37 +194,36 @@ function FormCharacter({
                     variant="contained"
                     size="large"
                     style={{
-                      backgroundColor: "#21AB69",
+                      backgroundColor: "#cecece",
                       color: "#FFF",
                       borderRadius: "24px",
                     }}
-                    // disabled={value !== 0}
-                    onClick={() => {
-                      if (color) {
-                        setColorTable([
-                          ...colorTable,
-                          {
-                            ref: "000000",
-                            description: color,
-                            price: "100",
-                            status: 0,
-                          },
-                        ]);
-                        setColor("");
-                      } else {
-                        toast.error("Campo inválido");
-                      }
-                    }}
+                    disabled
                   >
-                    Salvar
+                    Adicionar
                   </Button>
                 </Grid>
-                <Grid item xs={12} md={6} sm={6}></Grid>
+                <Grid item xs={12} md={2} sm={6}></Grid>
+                <Grid item xs={12} md={4} sm={6}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    style={{
+                      backgroundColor: "#cecece",
+                      color: "#FFF",
+                      borderRadius: "24px",
+                    }}
+                    disabled
+                  >
+                    Remover cores selecionadas
+                  </Button>
+                </Grid>
               </Grid>
             </Box>
             <MaterialTable
               columns={colorTableColumn}
-              data={colorTable}
+              data={data?.colors}
               style={{ width: "100%" }}
               options={{
                 paging: false,
@@ -270,17 +238,10 @@ function FormCharacter({
               actions={[
                 {
                   icon: forwardRef((props, ref) => (
-                    <Clear {...props} ref={ref} color="error" />
+                    <Clear {...props} ref={ref} color="disabled" />
                   )),
                   tooltip: "Limpar",
                   position: "row",
-                  onClick: (event, rowData) => {
-                    const temp = colorTable.filter((item) => {
-                      return item.description !== rowData.description;
-                    });
-
-                    setColorTable(temp);
-                  },
                 },
               ]}
             />
@@ -306,8 +267,7 @@ function FormCharacter({
                     placeholder="Descrição da cor"
                     variant="outlined"
                     autoComplete="text"
-                    value={tamanho}
-                    onChange={(e) => setTamanho(e.target.value)}
+                    disabled
                     fullWidth
                   />
                 </Grid>
@@ -322,37 +282,36 @@ function FormCharacter({
                     variant="contained"
                     size="large"
                     style={{
-                      backgroundColor: "#21AB69",
+                      backgroundColor: "#cecece",
                       color: "#FFF",
                       borderRadius: "24px",
                     }}
-                    // disabled={value !== 0}
-                    onClick={() => {
-                      if (tamanho) {
-                        setTamTable([
-                          ...tamTable,
-                          {
-                            ref: "000000",
-                            description: tamanho,
-                            price: "100",
-                            status: 0,
-                          },
-                        ]);
-                        setTamanho("");
-                      } else {
-                        toast.error("Campo inválido");
-                      }
-                    }}
+                    disabled
                   >
-                    Salvar
+                    Adicionar
                   </Button>
                 </Grid>
-                <Grid item xs={12} md={6} sm={6}></Grid>
+                <Grid item xs={12} md={2} sm={6}></Grid>
+                <Grid item xs={12} md={4} sm={6}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    style={{
+                      backgroundColor: "#cecece",
+                      color: "#FFF",
+                      borderRadius: "24px",
+                    }}
+                    disabled
+                  >
+                    Remover tamanhos selecionados
+                  </Button>
+                </Grid>
               </Grid>
             </Box>
             <MaterialTable
               columns={tamTableColumn}
-              data={tamTable}
+              data={data?.tamanhos}
               style={{ width: "100%" }}
               options={{
                 paging: false,
@@ -367,17 +326,10 @@ function FormCharacter({
               actions={[
                 {
                   icon: forwardRef((props, ref) => (
-                    <Clear {...props} ref={ref} color="error" />
+                    <Clear {...props} ref={ref} color="disabled" />
                   )),
                   tooltip: "Limpar",
                   position: "row",
-                  onClick: (event, rowData) => {
-                    const temp = tamTable.filter((item) => {
-                      return item.description !== rowData.description;
-                    });
-
-                    setTamTable(temp);
-                  },
                 },
               ]}
             />

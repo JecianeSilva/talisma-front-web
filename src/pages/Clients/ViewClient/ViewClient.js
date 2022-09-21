@@ -51,7 +51,7 @@ function FormViewClient({ id }) {
         err?.response.data?.message || "Não foi possível carregar os usuários"
       );
     } finally {
-      setLoading();
+      setLoading(false);
     }
   }
 
@@ -97,7 +97,7 @@ function FormViewClient({ id }) {
                   name="name"
                   variant="outlined"
                   autoComplete="text"
-                  value={client.name}
+                  value={client?.name}
                   fullWidth
                 />
               </Grid>
@@ -112,7 +112,7 @@ function FormViewClient({ id }) {
                   id="birthday"
                   name="birthday"
                   autoFocus
-                  value={client.birthday}
+                  value={client?.birthday}
                 />
               </Grid>
               <Grid item xs={12} md={3} sm={6}>
@@ -126,7 +126,7 @@ function FormViewClient({ id }) {
                   id="create_at"
                   name="create_at"
                   autoFocus
-                  value={client.createdAt.substring(0, 10)}
+                  value={client?.createdAt.substring(0, 10)}
                 />
               </Grid>
               <Grid item xs={12} md={3} sm={6}>
@@ -144,7 +144,7 @@ function FormViewClient({ id }) {
                   id="document"
                   name="document"
                   mask={"999.999.999-99"}
-                  value={client.document}
+                  value={client?.document}
                 />
               </Grid>
               <Grid item xs={12} md={3} sm={6}>
@@ -157,7 +157,7 @@ function FormViewClient({ id }) {
                   fullWidth
                   id="status"
                   name="status"
-                  value={client.status}
+                  value={client?.status}
                   autoFocus
                 >
                   <MenuItem value={0} key={0}>
@@ -178,7 +178,7 @@ function FormViewClient({ id }) {
                   fullWidth
                   id="categories"
                   name="categories"
-                  value={client.categories}
+                  value={client?.categories}
                   autoFocus
                 >
                   <MenuItem value={1} key={1}>
@@ -231,7 +231,7 @@ function FormViewClient({ id }) {
                   id="email"
                   name="email"
                   variant="outlined"
-                  value={client.email}
+                  value={client?.email}
                   fullWidth
                 />
               </Grid>
@@ -257,7 +257,7 @@ function FormViewClient({ id }) {
                   localization={"pt"}
                   country={"br"}
                   disabled
-                  value={client.phone}
+                  value={client?.phone}
                   style={{
                     width: "100%",
                     border: "1px solid rgb(0,0,0,0.25)",
@@ -279,7 +279,7 @@ function FormViewClient({ id }) {
                     border: "1px solid rgb(0,0,0,0.25)",
                     borderRadius: "4px",
                   }}
-                  value={client.whatsapp}
+                  value={client?.whatsapp}
                   component={TextField}
                 />
               </Grid>
@@ -313,7 +313,9 @@ function FormViewClient({ id }) {
                     id="address_code"
                     name="address_code"
                     mask={"99999-999"}
-                    value={client.address[0].zipcode}
+                    value={
+                      client?.address.length > 0 && client.address[0].zipcode
+                    }
                   />
                   <IconButton
                     disabled
@@ -335,7 +337,7 @@ function FormViewClient({ id }) {
                   id="address_street"
                   name="address_street"
                   autoFocus
-                  value={client.address[0].street}
+                  value={client?.address.length > 0 && client.address[0].street}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -345,7 +347,7 @@ function FormViewClient({ id }) {
                   variant="outlined"
                   disabled
                   fullWidth
-                  value={client.address[0].number}
+                  value={client?.address.length > 0 && client.address[0].number}
                   id="address_number"
                   name="address_number"
                   autoFocus
@@ -358,7 +360,9 @@ function FormViewClient({ id }) {
                   fullWidth
                   disabled
                   variant="outlined"
-                  value={client.address[0].complement}
+                  value={
+                    client?.address.length > 0 && client.address[0].complement
+                  }
                   id="address_complement"
                   name="address_complement"
                   onWheelCapture={(e) => {
@@ -374,7 +378,9 @@ function FormViewClient({ id }) {
                   variant="outlined"
                   size="small"
                   fullWidth
-                  value={client.address[0].district}
+                  value={
+                    client?.address.length > 0 && client.address[0].district
+                  }
                   id="address_district"
                   name="address_district"
                   autoComplete="text"
@@ -388,7 +394,7 @@ function FormViewClient({ id }) {
                   id="address_city"
                   name="address_city"
                   fullWidth
-                  value={client.address[0].city}
+                  value={client?.address.length > 0 && client.address[0].city}
                   variant="outlined"
                   size="small"
                   autoComplete="text"
@@ -403,7 +409,7 @@ function FormViewClient({ id }) {
                   id="address_state"
                   name="address_state"
                   fullWidth
-                  value={client.address[0].state}
+                  value={client?.address.length > 0 && client.address[0].state}
                   variant="outlined"
                   size="small"
                   autoComplete="text"
@@ -419,7 +425,9 @@ function FormViewClient({ id }) {
                   disabled
                   id="address_reference"
                   name="address_reference"
-                  value={client.address[0].reference}
+                  value={
+                    client?.address.length > 0 && client.address[0].reference
+                  }
                   autoFocus
                 />
               </Grid>

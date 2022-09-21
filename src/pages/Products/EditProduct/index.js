@@ -28,12 +28,13 @@ import FormStock from "./FormStock";
 import HorizontalLabelPositionBelowStepper from "../../../components/ProductStepper";
 import ProcuctStepper from "../../../components/ProductStepper";
 
-function EditClient() {
+function EditProduct() {
   const params = useParams();
   const formEl = useRef(null);
 
   const { id } = params;
   const [value, setValue] = React.useState(0);
+  const [isValid, setIsValid] = React.useState(false);
   const [callHandleSubmit, setCallHandleSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +45,6 @@ function EditClient() {
 
   const formik = useFormik({
     initialValues: {
-      id: "",
       codeExt: "",
       name: "",
       categories: 1,
@@ -63,7 +63,6 @@ function EditClient() {
       stockInitial: 0,
     },
     validationSchema: Yup.object({
-      id: Yup.string(),
       codeExt: Yup.string().required("Campo Obrigatório"),
       name: Yup.string().required("Campo Obrigatório"),
       categories: Yup.string().required("Campo Obrigatório"),
@@ -79,10 +78,6 @@ function EditClient() {
       details: Yup.string().required("Campo Obrigatório"),
       colorDescription: Yup.string(),
       tamDescription: Yup.string(),
-      image1: Yup.string(),
-      image2: Yup.string(),
-      image3: Yup.string(),
-      image4: Yup.string(),
       controlStock: Yup.string().required("Campo Obrigatório"),
       minStock: Yup.number().required("Campo Obrigatório"),
       stockInitial: Yup.number().required("Campo Obrigatório"),
@@ -142,7 +137,7 @@ function EditClient() {
               lineheight: "43px",
             }}
           >
-            Editar produto
+            Cadastrar produto
           </Typography>
 
           <div style={{ display: "flex" }}>
@@ -281,4 +276,4 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export default EditClient;
+export default EditProduct;

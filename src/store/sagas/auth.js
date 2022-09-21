@@ -5,33 +5,25 @@ import { toast } from "react-toastify";
 import { Types, Creators } from "../ducks/auth";
 
 export function* signIn(payload) {
-  console.log(payload);
-
   try {
     const response = yield call(Api.post, "/auth/login/", {
       email: payload.email,
       password: payload.password,
     });
-    console.log(response);
 
     if (response.status === 201) {
-      const { token } = "";
-
+      const { token } = response.data;
       Api.defaults.headers.Authorization = `Bearer ${token}`;
-
       yield put(Creators.signInSuccess(token));
       history.push("/home");
-    } else {
-      yield put(Creators.getToken());
-      toast.error(response.data.message);
-      yield put(Creators.signFailure());
     }
   } catch (error) {
-    toast.error(error.response.data.message);
-    const { token } = "";
-
-    yield put(Creators.signInSuccess(token));
-    // yield put(Creators.signFailure());
+    toast.error(
+      error?.response?.data?.message
+        ? error.response.data.message
+        : "Erro no sistema! Tente novamente mais tarde."
+    );
+    yield put(Creators.signFailure());
   }
 }
 
@@ -49,6 +41,7 @@ export function* setToken({ payload }) {
     Api.defaults.headers.Authorization = `Bearer ${access_token}`;
   }
 }
+
 export default all([
   takeLatest("persist/REHYDRATE", setToken),
   takeLatest(Types.SIGN_IN_REQUEST, signIn),
