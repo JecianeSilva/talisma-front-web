@@ -247,7 +247,7 @@ function FormCharacter({
                       }
                     }}
                   >
-                    Salvar
+                    Adicionar
                   </Button>
                 </Grid>
                 <Grid item xs={12} md={6} sm={6}></Grid>
@@ -344,7 +344,7 @@ function FormCharacter({
                       }
                     }}
                   >
-                    Salvar
+                    Adicionar
                   </Button>
                 </Grid>
                 <Grid item xs={12} md={6} sm={6}></Grid>

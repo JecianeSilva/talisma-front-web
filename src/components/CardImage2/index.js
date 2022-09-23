@@ -5,17 +5,10 @@ import { ReactComponent as imageUpload } from "../../assets/icons/image-upload.s
 import { ReactComponent as imageSwap } from "../../assets/icons/image-swap.svg";
 import { DeleteOutline } from "@material-ui/icons";
 
-function CardImage({ image, formik, index }) {
-  const handleImage = (e) => {
-    formik.setFieldValue(
-      `image${index}`,
-      URL.createObjectURL(e.target.files[0])
-    );
-  };
-
+function CardImage({ image, formik, handleImage }) {
   return (
     <CardContent>
-      {image && (
+      {image && image[1] !== null && (
         <div>
           <div
             style={{
@@ -31,14 +24,20 @@ function CardImage({ image, formik, index }) {
                 borderRadius: "0px 4px",
                 zIndex: 9999,
               }}
-              onClick={() => formik.setFieldValue(`image${index}`, null)}
+              onClick={(e) => {
+                const images = formik.values.images;
+                formik.values.images.set(image[0], null);
+                formik.setFieldValue("images", images);
+              }}
             >
-              <DeleteOutline style={{ margin: "4px 2px" }} color={"disabled"} />
+              <DeleteOutline
+                style={{ margin: "2px 0px", width: "32px" }}
+                color={"disabled"}
+              />
             </div>
           </div>
           <div
             style={{
-              width: "220px",
               height: "220px",
               borderRadius: 10,
               boxShadow: "0px 0px 3px 0px #bdbcbc",
@@ -46,17 +45,16 @@ function CardImage({ image, formik, index }) {
           >
             <img
               style={{
-                height: "220px",
-                width: "220px",
+                borderRadius: 10,
                 objectFit: "cover",
               }}
               alt="imagem do produto"
-              src={image}
+              src={image && image[1]}
             />
           </div>
           <div
             style={{
-              marginTop: "-44px",
+              marginTop: "-36px",
               zIndex: 9999,
               display: "flex",
               justifyContent: "flex-end",
@@ -65,7 +63,7 @@ function CardImage({ image, formik, index }) {
           >
             <input
               accept="image/*"
-              id={`contained-button-file-${index}`}
+              id={`contained-button-file-${image[0]}`}
               type="file"
               style={{
                 display: "none",
@@ -73,7 +71,7 @@ function CardImage({ image, formik, index }) {
               onChange={handleImage}
             />
             <label
-              for={`contained-button-file-${index}`}
+              for={`contained-button-file-${image[0]}`}
               style={{
                 background: "rgba(255, 255, 255,0.96)",
                 borderRadius: "4px 0px",
@@ -90,7 +88,7 @@ function CardImage({ image, formik, index }) {
       )}
       <input
         accept="image/*"
-        id={`contained-button-file-${index}`}
+        id={`contained-button-file-${image[0]}`}
         type="file"
         style={{
           display: "none",
@@ -98,16 +96,16 @@ function CardImage({ image, formik, index }) {
         onChange={handleImage}
       />
 
-      <label for={`contained-button-file-${index}`}>
+      <label for={`contained-button-file-${image[0]}`}>
         <Box
           sx={{
-            display: image ? "none" : "flex",
+            display: image && image[1] ? "none" : "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             height: "220px",
             width: "220px",
-            border: image ? "none" : "2px dashed #bdbcbc",
+            border: image && image[1] ? "none" : "2px dashed #bdbcbc",
             borderRadius: 10,
           }}
         >

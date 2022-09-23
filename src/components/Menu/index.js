@@ -62,13 +62,37 @@ function Menu({ open, setOpen }) {
       {
         label: "Produtos",
         path: "/produtos",
-        key: "produtos",
+        key: "produto",
         icon: <SvgIcon component={iconProduct} viewBox="0 0 24 24" />,
         subItem: [
           {
             label: "Produtos",
             path: "/produtos",
             key: "produtos",
+            icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
+          },
+          {
+            label: "Promoções",
+            path: "/produto/promocoes",
+            key: "promocoes",
+            icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
+          },
+          {
+            label: "Novidades",
+            path: "/produto/novidades",
+            key: "novidades",
+            icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
+          },
+          {
+            label: "Categorias",
+            path: "/produto/categorias",
+            key: "categorias",
+            icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
+          },
+          {
+            label: "Tipos de produto",
+            path: "/produto/tipos",
+            key: "tipos-produto",
             icon: <SvgIcon component={circle} viewBox="0 0 24 24" />,
           },
         ],

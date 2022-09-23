@@ -11,15 +11,16 @@ import {
   MenuItem,
   Grid,
 } from "@material-ui/core";
-import { ArrowBackIos } from "@material-ui/icons";
+import { Add, ArrowBackIos } from "@material-ui/icons";
 
 import Loading from "../../../components/Loading";
 import history from "../../../config/history";
 
 import { Container, ContentBody, ContentHeader } from "../styles";
 import Api from "../../../config/api";
+import CardImage from "../../../components/CardImage";
 
-function TypeClients() {
+function NewCategorie() {
   const [loading, setLoading] = useState(false);
   const formEl = useRef(null);
 
@@ -27,6 +28,8 @@ function TypeClients() {
     initialValues: {
       description: "",
       status: 0,
+      ordem: 1,
+      image1: "",
     },
     validationSchema: Yup.object({
       description: Yup.string().required("Campo Obrigatório"),
@@ -41,25 +44,30 @@ function TypeClients() {
     const data = {
       description: values.description,
       status: values.status,
+      order: values.order,
+      image: values.image1,
     };
+    console.log(data);
     try {
-      Api.post("/userType", data)
-        .then((response) => {
-          if (response.status === 201) {
-            toast.success("Tipo de cliente cadastrado com sucesso!");
-            formEl.current.reset();
-            history.goBack();
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response.data.message);
-        });
+      // Api.post("/categorie", data)
+      //   .then((response) => {
+      //     if (response.status === 201) {
+      toast.success("Categoria cadastrada com sucesso!");
+      formEl.current.reset();
+      history.goBack();
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     toast.error(err.response.data.message);
+      //   });
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data.message);
       } else {
         toast.error("Error no sistema! Tente novamente mais tarde.");
       }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -93,7 +101,7 @@ function TypeClients() {
                 lineheight: "43px",
               }}
             >
-              Cadastrar tipo de cliente
+              Cadastrar categoria
             </Typography>
 
             <div style={{ display: "flex" }}>
@@ -111,6 +119,7 @@ function TypeClients() {
               </Button>
               <Button
                 variant="contained"
+                startIcon={<Add />}
                 size="large"
                 style={{
                   backgroundColor: "#21AB69",
@@ -120,7 +129,7 @@ function TypeClients() {
                 }}
                 onClick={formik.handleSubmit}
               >
-                Salvar
+                Cadastrar
               </Button>
             </div>
           </ContentHeader>
@@ -136,13 +145,13 @@ function TypeClients() {
                 color="secondary"
                 style={{ fontWeight: "bold", marginBottom: "20px" }}
               >
-                Dados do tipo
+                Dados da categoria
               </Typography>
 
-              <Box container sx={{ display: "flex", flexWrap: "wrap" }}>
+              <Box container mb={5} sx={{ display: "flex", flexWrap: "wrap" }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={4} sm={6}>
-                    <Typography>ID*</Typography>
+                  <Grid item xs={12} md={3} sm={6}>
+                    <Typography>Código*</Typography>
                     <TextField
                       size="small"
                       id="id"
@@ -158,7 +167,7 @@ function TypeClients() {
                       fullWidth
                     />
                   </Grid>
-                  <Grid item xs={12} md={4} sm={6}>
+                  <Grid item xs={12} md={3} sm={6}>
                     <Typography>Descrição*</Typography>
                     <TextField
                       required
@@ -180,7 +189,7 @@ function TypeClients() {
                       fullWidth
                     />
                   </Grid>
-                  <Grid item xs={12} md={4} sm={6}>
+                  <Grid item xs={12} md={3} sm={6}>
                     <Typography>Status*</Typography>
                     <TextField
                       select
@@ -202,7 +211,42 @@ function TypeClients() {
                       </MenuItem>
                     </TextField>
                   </Grid>
+                  <Grid item xs={12} md={3} sm={6}>
+                    <Typography>Ordem</Typography>
+                    <TextField
+                      select
+                      size="small"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="ordem"
+                      name="ordem"
+                      value={formik.values.ordem}
+                      autoFocus
+                      onChange={formik.handleChange}
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                        <MenuItem value={item} key={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
                 </Grid>
+              </Box>
+              <Typography
+                variant="h2"
+                color="secondary"
+                style={{ fontWeight: "bold" }}
+              >
+                Ícone da categoria
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
+                <CardImage
+                  image={formik.values.image1}
+                  formik={formik}
+                  index={1}
+                />
               </Box>
             </form>
           </ContentBody>
@@ -212,4 +256,4 @@ function TypeClients() {
   );
 }
 
-export default TypeClients;
+export default NewCategorie;

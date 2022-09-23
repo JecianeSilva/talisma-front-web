@@ -10,7 +10,7 @@ import {
   IconButton,
   Divider,
 } from "@material-ui/core";
-import { ArrowBackIos, Search } from "@material-ui/icons";
+import { Add, ArrowBackIos, Search } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import Api from "../../../config/api";
 import { useFormik } from "formik";
@@ -142,7 +142,7 @@ function EditClient() {
               lineheight: "43px",
             }}
           >
-            Editar produto
+            Cadastrar produto
           </Typography>
 
           <div style={{ display: "flex" }}>
@@ -162,6 +162,7 @@ function EditClient() {
               ref={formEl}
               variant="contained"
               size="large"
+              startIcon={<Add />}
               style={{
                 backgroundColor:
                   value === 2 || formik.isValid ? "#21AB69" : "#cecece",
@@ -173,7 +174,7 @@ function EditClient() {
               //disabled={!(value === 2 || formik.isValid)}
               onClick={() => formik.handleSubmit()}
             >
-              Salvar
+              Cadastrar
             </Button>
           </div>
         </ContentHeader>

@@ -9,11 +9,12 @@ import history from "../../../config/history";
 import Visibility from "@material-ui/icons/Visibility";
 import { VisibilityOutlined } from "@material-ui/icons";
 import { localization } from "../../../utils/location-ptBr";
-import { Box } from "@material-ui/core";
+import { Box, Grid, TextField, Typography } from "@material-ui/core";
 
 function StockHistory({ id }) {
   const [loading, setLoading] = useState(true);
-  const [cardVirtual, setCardVirtual] = useState();
+  const [stockHistory, setStockHistoy] = useState();
+  const [stockResume, setStockResume] = useState();
 
   const columnsTable = [
     {
@@ -77,7 +78,8 @@ function StockHistory({ id }) {
   // get list
   async function loadData() {
     try {
-      // const { data } = await Api.get(`/user/${id}`);
+      // const {data} = await Api.get(`/history/${id}`);
+      // const responseResume = await Api.get(`/resume/${id}`);
       const data = [
         {
           number: "00000000",
@@ -170,7 +172,8 @@ function StockHistory({ id }) {
           status: "Entregue",
         },
       ];
-      setCardVirtual(data);
+      setStockHistoy(data);
+      setStockResume({ data: "2022-01-01" });
     } catch (err) {
       toast(
         "error",
@@ -192,11 +195,56 @@ function StockHistory({ id }) {
         <Loading />
       ) : (
         <>
-          <Box></Box>
+          <Box container sx={{ display: "flex", flexWrap: "wrap" }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={3} sm={6}>
+                <Typography>Data da última compra</Typography>
+                <TextField
+                  type="date"
+                  size="small"
+                  variant="outlined"
+                  disabled
+                  fullWidth
+                  id="date_last_buy"
+                  name="date_last_buy"
+                  autoFocus
+                  value={stockResume?.date_last_buy.substring(0, 10)}
+                />
+              </Grid>
+              <Grid item xs={12} md={3} sm={6}>
+                <Typography>Dias sem fazer compra</Typography>
+                <TextField
+                  size="small"
+                  type="number"
+                  variant="outlined"
+                  disabled
+                  fullWidth
+                  id="count_last_buy"
+                  name="create_at"
+                  autoFocus
+                  value={stockResume?.count_last_buy}
+                />
+              </Grid>
+              <Grid item xs={12} md={3} sm={6}>
+                <Typography>Dias sem fazer compra</Typography>
+                <TextField
+                  size="small"
+                  type="number"
+                  variant="outlined"
+                  disabled
+                  fullWidth
+                  id="count_last_buy"
+                  name="create_at"
+                  autoFocus
+                  value={stockResume?.count_last_buy}
+                />
+              </Grid>
+            </Grid>
+          </Box>
           <MaterialTable
             title="Histórico de pedidos"
             columns={columnsTable}
-            data={cardVirtual}
+            data={stockHistory}
             style={{ width: "100%" }}
             options={{
               paging: false,

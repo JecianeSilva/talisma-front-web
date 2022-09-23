@@ -13,6 +13,7 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import {
+  Add,
   ArrowBackIos,
   SearchOutlined,
   VisibilityOffOutlined,
@@ -262,6 +263,7 @@ function Clients() {
               <Button
                 variant="contained"
                 size="large"
+                startIcon={<Add />}
                 style={{
                   backgroundColor: "#21AB69",
                   color: "#FFF",
@@ -270,7 +272,7 @@ function Clients() {
                 }}
                 onClick={formik.handleSubmit}
               >
-                Salvar
+                Cadastrar
               </Button>
             </div>
           </ContentHeader>
