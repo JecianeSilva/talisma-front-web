@@ -9,22 +9,18 @@ const EditProduct = lazy(() => import("./Products/EditProduct"));
 const ViewProduct = lazy(() => import("./Products/ViewProduct"));
 
 const Promotions = lazy(() => import("./Promotions"));
-// const NewPromotion = lazy(() => import("./Products/NewProduct"));
-// const EditPromotion = lazy(() => import("./Products/EditProduct"));
-// const ViewPromotion = lazy(() => import("./Products/ViewProduct"));
 
 const News = lazy(() => import("./News"));
+
 const Categories = lazy(() => import("./Categories"));
 const NewCategorie = lazy(() => import("./Categories/NewCategorie"));
-
-// const NewPromotion = lazy(() => import("./Products/NewProduct"));
-// const EditPromotion = lazy(() => import("./Products/EditProduct"));
-// const ViewPromotion = lazy(() => import("./Products/ViewProduct"));
+const ViewCategorie = lazy(() => import("./Categories/ViewCategorie"));
+const EditCategorie = lazy(() => import("./Categories/EditCategorie"));
 
 const TypesProduct = lazy(() => import("./TypesProduct"));
-// const NewPromotion = lazy(() => import("./Products/NewProduct"));
-// const EditPromotion = lazy(() => import("./Products/EditProduct"));
-// const ViewPromotion = lazy(() => import("./Products/ViewProduct"));
+const NewTypeProduct = lazy(() => import("./TypesProduct/NewTypeProduct"));
+const EditTypeProduct = lazy(() => import("./TypesProduct/EditTypeProduct"));
+const ViewTypeProduct = lazy(() => import("./TypesProduct/ViewTypeProduct"));
 
 //CLIENTES
 //--------------------------------------------------------------------
@@ -78,6 +74,14 @@ export const listRoutes = [
     path: "/produto/novidades",
     component: News,
   },
+
+  // {
+  //   exact: false,
+  //   private: true,
+  //   path: "/produto/novidades",
+  //   component: News,
+  // },
+
   {
     exact: false,
     private: true,
@@ -93,8 +97,39 @@ export const listRoutes = [
   {
     exact: false,
     private: true,
+    path: "/produto/categoria/editar-categoria/:id",
+    component: EditCategorie,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/produto/categoria/view-categoria/:id",
+    component: ViewCategorie,
+  },
+
+  {
+    exact: false,
+    private: true,
     path: "/produto/tipos",
     component: TypesProduct,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/produto/tipos/novo-tipo",
+    component: NewTypeProduct,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/produto/tipos/editar-tipo/:id",
+    component: EditTypeProduct,
+  },
+  {
+    exact: false,
+    private: true,
+    path: "/produto/tipos/view-tipo/:id",
+    component: ViewTypeProduct,
   },
   // pages clientes
   {

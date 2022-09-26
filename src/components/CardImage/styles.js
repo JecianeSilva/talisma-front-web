@@ -1,37 +1,43 @@
+import { Box } from "@material-ui/core";
 import styled from "styled-components";
-export const Container = styled.div`
+
+export const UploadCard = styled(Box)(({ theme, image }) => ({
+  display: image && image[1] ? "none" : "flex",
+  border: image && image[1] ? "none" : "2px dashed #bdbcbc",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "220px",
+  width: "220px",
+  borderRadius: 10,
+}));
+
+export const ImageCard = styled.div``;
+
+export const ButtonCard = styled.div`
+  display: flex;
   width: 100%;
-  //
+  justify-content: flex-end;
 `;
-// export const StepIconComponent = styled("div")(({ theme, ownerState }) => ({
-//   backgroundColor: "#cecece",
-//   color: "#fff",
-//   width: 35,
-//   height: 35,
-//   display: "flex",
-//   justifyContent: "center",
-//   alignItems: "center",
-//   borderRadius: "50%",
+export const IconButton = styled("div")(({ theme, pos }) => ({
+  position: "absolute",
+  background: "rgba(255,255,255,0.85)",
+  borderRadius: pos === "end" ? "4px 0px 10px" : "0px 10px 0px 4px",
+  zIndex: "9999",
+}));
+export const ImageContent = styled.div`
+  height: 220px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 3px 0px #bdbcbc;
+`;
+export const Image = styled.img`
+  height: 220px;
+  min-width: 220px;
+  border-radius: 10px;
+  object-fit: cover;
+`;
 
-//   ...(ownerState.active && {
-//     backgroundColor: "#C14979",
-//   }),
-//   ...(ownerState.completed && {
-//     backgroundColor: "#C14979",
-//   }),
-// }));
-
-// const ColorlibStepIconRoot = styled('div')(({ theme, ownerState }) => ({
-//   backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ccc',
-//   zIndex: 1,
-
-//   ...(ownerState.active && {
-//     backgroundImage:
-//       'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
-//     boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
-//   }),
-//   ...(ownerState.completed && {
-//     backgroundImage:
-//       'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
-//   }),
-// }));
+export const Input = styled.input`
+  display: none;
+`;
+export const Label = styled.label``;

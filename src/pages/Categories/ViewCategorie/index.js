@@ -1,46 +1,57 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
+  Box,
   Typography,
   Button,
-  Box,
-  Tabs,
-  Grid,
+  IconButton,
   TextField,
   MenuItem,
-  Tab,
-  IconButton,
-  Divider,
+  Grid,
 } from "@material-ui/core";
-import { ArrowBackIos } from "@material-ui/icons";
-import Api from "../../../config/api";
+import { Add, ArrowBackIos } from "@material-ui/icons";
 
 import Loading from "../../../components/Loading";
-
 import history from "../../../config/history";
 
 import { Container, ContentBody, ContentHeader } from "../styles";
+import Api from "../../../config/api";
+import CardImage from "../../../components/CardImage";
 import { useParams } from "react-router-dom";
 
-function ViewTypeClient() {
-  const [loading, setLoading] = useState(false);
-  const [userType, setUserType] = useState();
+function ViewCategorie() {
   const formEl = useRef(null);
+
+  const [loading, setLoading] = useState(true);
+  const [categorie, setCategorie] = useState();
 
   const params = useParams();
   const { id } = params;
 
   // get list users
-  async function loadDataTypeUser() {
-    setLoading(true);
+  async function loadData() {
     try {
-      const { data } = await Api.get(`/userType/${id}`);
-      setUserType(data);
+      // const { data } = await Api.get(`/categorie/${id}`);
+      const data = {
+        id: "000000",
+        description: "descrição da categoria",
+        status: "0",
+        ordem: "1",
+        images: [
+          1,
+          // "blob:http://localhost:3000/47d59e3c-1ac8-43d8-9815-0885de770fca",
+          null,
+        ],
+      };
+
+      setCategorie(data);
     } catch (err) {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os dados"
+        err?.response.data?.message || "Não foi possível carregar categorias"
       );
     } finally {
       setLoading(false);
@@ -48,7 +59,7 @@ function ViewTypeClient() {
   }
 
   useEffect(() => {
-    loadDataTypeUser();
+    loadData();
   }, [id]);
 
   return (
@@ -81,7 +92,7 @@ function ViewTypeClient() {
                 lineheight: "43px",
               }}
             >
-              Tipo de cliente
+              Categoria
             </Typography>
 
             <div style={{ display: "flex" }}>
@@ -94,7 +105,9 @@ function ViewTypeClient() {
                   marginLeft: "20px",
                   borderRadius: "24px",
                 }}
-                onClick={() => history.push(`/tipos-cliente/editar-tipo/${id}`)}
+                onClick={() =>
+                  history.push(`/produto/categoria/editar-categoria/${id}`)
+                }
               >
                 Editar
               </Button>
@@ -112,13 +125,13 @@ function ViewTypeClient() {
                 color="secondary"
                 style={{ fontWeight: "bold", marginBottom: "20px" }}
               >
-                Dados do tipo
+                Dados da categoria
               </Typography>
 
-              <Box container sx={{ display: "flex", flexWrap: "wrap" }}>
+              <Box container mb={5} sx={{ display: "flex", flexWrap: "wrap" }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={4} sm={6}>
-                    <Typography>ID*</Typography>
+                  <Grid item xs={12} md={3} sm={6}>
+                    <Typography>Código*</Typography>
                     <TextField
                       size="small"
                       id="id"
@@ -127,40 +140,35 @@ function ViewTypeClient() {
                       placeholder="id"
                       variant="outlined"
                       autoComplete="text"
-                      value={userType?.id}
+                      value={categorie?.id}
                       fullWidth
                     />
                   </Grid>
-
-                  <Grid item xs={12} md={4} sm={6}>
+                  <Grid item xs={12} md={3} sm={6}>
                     <Typography>Descrição*</Typography>
                     <TextField
                       required
                       size="small"
                       id="description"
-                      disabled
                       name="description"
                       variant="outlined"
                       autoComplete="text"
                       placeholder="Descrição da categoria"
-                      value={userType?.description}
+                      value={categorie?.description}
                       fullWidth
                     />
                   </Grid>
-
-                  <Grid item xs={12} md={4} sm={6}>
+                  <Grid item xs={12} md={3} sm={6}>
                     <Typography>Status*</Typography>
-
                     <TextField
                       select
                       size="small"
                       variant="outlined"
                       required
-                      disabled
                       fullWidth
                       id="status"
                       name="status"
-                      value={userType?.status}
+                      value={categorie && categorie.status}
                       autoFocus
                     >
                       <MenuItem value={0} key={0}>
@@ -171,7 +179,37 @@ function ViewTypeClient() {
                       </MenuItem>
                     </TextField>
                   </Grid>
+                  <Grid item xs={12} md={3} sm={6}>
+                    <Typography>Ordem</Typography>
+                    <TextField
+                      select
+                      size="small"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="ordem"
+                      name="ordem"
+                      value={categorie && categorie.ordem}
+                      autoFocus
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                        <MenuItem value={item} key={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
                 </Grid>
+              </Box>
+              <Typography
+                variant="h2"
+                color="secondary"
+                style={{ fontWeight: "bold" }}
+              >
+                Ícone da categoria
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
+                <CardImage image={categorie && categorie.images} disabled />
               </Box>
             </form>
           </ContentBody>
@@ -181,4 +219,4 @@ function ViewTypeClient() {
   );
 }
 
-export default ViewTypeClient;
+export default ViewCategorie;

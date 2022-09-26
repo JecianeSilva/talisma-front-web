@@ -30,11 +30,13 @@ import { VisibilityOffOutlined, VisibilityOutlined } from "@material-ui/icons";
 import Button from "../../components/Button";
 
 function Login() {
+  const formEl = useRef(null);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState();
-  const formEl = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
+
   const handleClickShowPassword = () => setShowPassword(!showPassword);
+
   const formik = useFormik({
     initialValues: {
       email: "",

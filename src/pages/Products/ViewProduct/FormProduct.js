@@ -29,7 +29,7 @@ import { ReactComponent as imageSwap } from "../../../assets/icons/image-swap.sv
 import { Close } from "@material-ui/icons";
 import CardImage from "../../../components/CardImage";
 
-function FormProduct({ id, data, value, loading }) {
+function FormProduct({ id, value, data, loading }) {
   return (
     <>
       {loading ? (
@@ -122,6 +122,7 @@ function FormProduct({ id, data, value, loading }) {
                   disabled
                   fullWidth
                   id="banho"
+                  placeholder="Selecione o banho do produto"
                   name="banho"
                   value={data?.banho}
                   autoFocus
@@ -147,6 +148,12 @@ function FormProduct({ id, data, value, loading }) {
                 >
                   <MenuItem value={1} key={1}>
                     {"Masculino"}
+                  </MenuItem>
+                  <MenuItem value={2} key={2}>
+                    {"Feminino"}
+                  </MenuItem>
+                  <MenuItem value={3} key={3}>
+                    {"Infantil"}
                   </MenuItem>
                 </TextField>
               </Grid>
@@ -237,10 +244,10 @@ function FormProduct({ id, data, value, loading }) {
             Imagens do produto
           </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
-            <CardImage image={data.image} index={1} />
-            <CardImage index={2} />
-            <CardImage index={3} />
-            <CardImage index={4} />
+            {Array.from(data.images).map((value) => {
+              return <CardImage image={value} disabled />;
+              // return <h1>{value}</h1>;
+            })}
           </Box>
         </form>
       )}

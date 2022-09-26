@@ -6,14 +6,6 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   padding: 40px;
-`;
-
-export const ContentHeader = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-
-  margin-bottom: 2.2rem;
 
   .MuiInputBase-root {
     color: #8c8c8c;
@@ -35,6 +27,14 @@ export const ContentHeader = styled.div`
     padding: 0;
   }
 `;
+
+export const ContentHeader = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 2.2rem;
+`;
 export const ContentBody = styled.div`
   display: flex;
   flex-direction: column;
@@ -55,6 +55,13 @@ export const ContentBody = styled.div`
   .MuiInputBase-input,
   .react-tel-input .form-control {
     color: #8c8c8c;
+  }
+
+  .MuiInputBase-root {
+    color: #8c8c8c;
+    border-radius: 34px;
+    border: none;
+    background-color: #fff;
   }
   .muiinputbase-root.mui-disabled, muiinputbase-input: {
     color: #bdbcbc;

@@ -23,14 +23,12 @@ import history from "../../config/history";
 import { localization } from "../../utils/location-ptBr";
 import { Button, Divider, Icon } from "@material-ui/core";
 import { Alert } from "@mui/material";
+import { Add } from "@material-ui/icons";
 
 const tableIcons = {
-  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  Add: forwardRef((props, ref) => <Add className={"add"} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Delete: forwardRef((props, ref) => (
-    <DeleteOutline {...props} ref={ref} sx={{ color: "#F32424" }} />
-  )),
+  Clear: forwardRef((props, ref) => <Clear className={"clear"} />),
   DetailPanel: forwardRef((props, ref) => (
     <ChevronRight {...props} ref={ref} />
   )),
@@ -60,9 +58,13 @@ function Table({
   title,
   selectable,
   onDelete,
+  onPlus,
+  handleDelete,
+  handlePlus,
   hideActions,
   hideEditAction,
   hideDeleteAction,
+  plusAction,
   hideViewAction,
   perPage,
   ...rest
@@ -84,6 +86,10 @@ function Table({
         options={{
           pageSize: data && data.length < perPage ? data.length : perPage,
           selection: selectable,
+          // selectionProps: (rowData) => ({
+          //   disabled: rowData.id === "00000000",
+          //   color: "primary",
+          // }),
           showTitle: false,
           toolbar: true,
           paging: false,
@@ -136,15 +142,30 @@ function Table({
                 hideDeleteAction
                   ? null
                   : {
-                      icon: tableIcons.Delete,
-                      color: "#F32424",
+                      icon: tableIcons.Clear,
+                      position: "row",
                       tooltip: "Deletar",
                       onClick: (event, rowData) => {
                         event.preventDefault();
-                        setId(rowData.length > 0 ? rowData[0].id : rowData.id);
-                        handleDialog();
+                        // setId(rowData.length > 0 ? rowData[0].id : rowData.id);
+                        // handleDialog();
+                        handleDelete();
                       },
                       disabled: !onDelete,
+                    },
+                !plusAction
+                  ? null
+                  : {
+                      icon: tableIcons.Add,
+                      position: "row",
+                      tooltip: "Adicionar",
+                      onClick: (event, rowData) => {
+                        event.preventDefault();
+                        // setId(rowData.length > 0 ? rowData[0].id : rowData.id);
+                        // handleDialog();
+                        handlePlus();
+                      },
+                      disabled: !onPlus,
                     },
               ]
         }
@@ -174,18 +195,6 @@ function Table({
                   >
                     {title}
                   </div>
-
-                  {/* <Button
-                  style={{
-                    height: "fit-content",
-                    borderRadius: "24px",
-                    color: "#4F4F4F",
-                  }}
-                  variant="outlined"
-                >
-                  <FilterList color="#4F4F4F" />
-                  Filtros
-                </Button> */}
                 </div>
               )}
               <Divider />

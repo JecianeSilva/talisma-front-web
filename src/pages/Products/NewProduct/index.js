@@ -49,7 +49,7 @@ function EditClient() {
       name: "",
       categories: 1,
       type: 1,
-      banho: 1,
+      banho: "",
       model: 1,
       price: "",
       isNew: true,
@@ -61,6 +61,12 @@ function EditClient() {
       minStock: 0,
       controlStock: "",
       stockInitial: 0,
+      images: new Map([
+        [1, null],
+        [2, null],
+        [3, null],
+        [4, null],
+      ]),
     },
     validationSchema: Yup.object({
       id: Yup.string(),

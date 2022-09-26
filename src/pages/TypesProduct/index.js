@@ -19,10 +19,10 @@ import Loading from "../../components/Loading";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
 
-function TypeClients() {
+function TypesProduct() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [userTypes, setUserTypes] = useState([]);
+  const [typesProduct, setTypesProduct] = useState([]);
 
   const columnsTable = [
     {
@@ -50,16 +50,63 @@ function TypeClients() {
     },
   ];
 
-  // get list userTypes
-  async function loadDataUserTypes() {
+  async function loadData() {
     try {
-      const { data } = await Api.get("/userType");
-      setUserTypes(data);
+      // const { data } = await Api.get("/product-type");
+      const data = [
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+        {
+          id: "00000000",
+          description: "Lorem ipsum dolor",
+          status: 0,
+        },
+      ];
+      setTypesProduct(data);
     } catch (err) {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os usuários"
+        err?.response.data?.message ||
+          "Não foi possível carregar os tipos de produto"
       );
     } finally {
       setLoading(false);
@@ -67,7 +114,7 @@ function TypeClients() {
   }
 
   useEffect(() => {
-    loadDataUserTypes();
+    loadData();
   }, []);
 
   return (
@@ -84,7 +131,7 @@ function TypeClients() {
                 marginRight: "40px",
               }}
             >
-              Tipos de clientes
+              Tipos de produtos
             </Typography>
 
             <TextField
@@ -105,7 +152,7 @@ function TypeClients() {
             />
             <Box display={"flex"} flex={1} justifyContent={"flex-end"}>
               <Button
-                handleOnClick={() => history.push("/tipos-cliente/novo-tipo")}
+                handleOnClick={() => history.push("/produto/tipos/novo-tipo")}
                 title="Adicionar"
                 padding="0.5rem"
                 style={{ maxWidth: "9rem" }}
@@ -113,12 +160,12 @@ function TypeClients() {
             </Box>
           </ContentHeader>
           <Table
-            pathname="tipos-cliente"
+            pathname="tipos"
             pathname2="tipo"
-            title="Tipos de cliente"
+            title="Tipos de produto"
             perPage={10}
             columns={columnsTable}
-            data={userTypes}
+            data={typesProduct}
             selectable
             hideDeleteAction
           />
@@ -128,4 +175,4 @@ function TypeClients() {
   );
 }
 
-export default TypeClients;
+export default TypesProduct;

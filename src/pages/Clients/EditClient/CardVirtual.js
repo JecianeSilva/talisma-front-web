@@ -96,7 +96,7 @@ function CardVirtual({ id }) {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os usuários"
+        err?.response.data?.message || "Não foi possível carregar os dados"
       );
     } finally {
       setLoading();

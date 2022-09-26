@@ -24,6 +24,7 @@ import history from "../../../config/history";
 
 import { Container, ContentBody, ContentHeader } from "../styles";
 import { useParams } from "react-router-dom";
+import CardImage from "../../../components/CardImage";
 
 function EditClient() {
   const [loading, setLoading] = useState(false);
@@ -32,18 +33,20 @@ function EditClient() {
   const params = useParams();
   const { id } = params;
 
-  // get list users
-  async function loadDataTypeUser() {
+  async function loadData() {
     try {
-      const { data } = await Api.get(`/userType/${id}`);
-      formik.setFieldValue("id", data.id);
-      formik.setFieldValue("description", data.description);
-      formik.setFieldValue("status", data.status);
+      // const { data } = await Api.get(`/categorie/${id}`);
+      formik.setFieldValue("id", "000000");
+      formik.setFieldValue("description", "descrição da categoria");
+      formik.setFieldValue("status", 0);
+      formik.setFieldValue("order", 1);
+      formik.setFieldValue("images", [1, null]);
     } catch (err) {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os dados"
+        err?.response.data?.message ||
+          "Não foi possível carregar os dados da categoria"
       );
     } finally {
       setLoading();
@@ -52,12 +55,16 @@ function EditClient() {
 
   const formik = useFormik({
     initialValues: {
+      id: "",
       description: "",
       status: 0,
+      order: 1,
+      images: [1, null],
     },
     validationSchema: Yup.object({
       description: Yup.string().required("Campo Obrigatório"),
       status: Yup.string().required("Campo Obrigatório"),
+      order: Yup.string().required("Campo Obrigatório"),
     }),
     onSubmit: async (values) => {
       handleSubmit(values);
@@ -68,30 +75,34 @@ function EditClient() {
     const data = {
       description: values.description,
       status: values.status,
+      order: values.order,
     };
+    console.log(data);
     try {
-      Api.patch(`/userType/${id}`, data)
-        .then((response) => {
-          if (response.status === 200) {
-            toast.success("Tipo de cliente alterado com sucesso!");
-            formEl.current.reset();
-            history.goBack();
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response.data.message);
-        });
+      // Api.patch(`/categorie/${id}`, data)
+      // .then((response) => {
+      // if (response.status === 201) {
+      toast.success("Categoria alterada com sucesso!");
+      formEl.current.reset();
+      history.goBack();
+      //   }
+      // })
+      // .catch((err) => {
+      //   toast.error(err.response.data.message);
+      // });
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data.message);
       } else {
         toast.error("Error no sistema! Tente novamente mais tarde.");
       }
+    } finally {
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadDataTypeUser();
+    loadData();
   }, [id]);
 
   return (
@@ -124,7 +135,7 @@ function EditClient() {
                 lineheight: "43px",
               }}
             >
-              Editar tipo de cliente
+              Editar categoria
             </Typography>
 
             <div style={{ display: "flex" }}>
@@ -167,13 +178,13 @@ function EditClient() {
                 color="secondary"
                 style={{ fontWeight: "bold", marginBottom: "20px" }}
               >
-                Dados do tipo
+                Dados da categoria
               </Typography>
 
-              <Box container sx={{ display: "flex", flexWrap: "wrap" }}>
+              <Box container mb={5} sx={{ display: "flex", flexWrap: "wrap" }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={4} sm={6}>
-                    <Typography>ID*</Typography>
+                  <Grid item xs={12} md={3} sm={6}>
+                    <Typography>Código*</Typography>
                     <TextField
                       size="small"
                       id="id"
@@ -189,7 +200,7 @@ function EditClient() {
                       fullWidth
                     />
                   </Grid>
-                  <Grid item xs={12} md={4} sm={6}>
+                  <Grid item xs={12} md={3} sm={6}>
                     <Typography>Descrição*</Typography>
                     <TextField
                       required
@@ -211,7 +222,7 @@ function EditClient() {
                       fullWidth
                     />
                   </Grid>
-                  <Grid item xs={12} md={4} sm={6}>
+                  <Grid item xs={12} md={3} sm={6}>
                     <Typography>Status*</Typography>
                     <TextField
                       select
@@ -233,7 +244,48 @@ function EditClient() {
                       </MenuItem>
                     </TextField>
                   </Grid>
+
+                  <Grid item xs={12} md={3} sm={6}>
+                    <Typography>Ordem</Typography>
+                    <TextField
+                      select
+                      size="small"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="order"
+                      name="order"
+                      value={formik.values.order}
+                      autoFocus
+                      onChange={formik.handleChange}
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                        <MenuItem value={item} key={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
                 </Grid>
+              </Box>
+              <Typography
+                variant="h2"
+                color="secondary"
+                style={{ fontWeight: "bold" }}
+              >
+                Ícone da categoria
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
+                <CardImage
+                  image={formik.values.images}
+                  formik={formik}
+                  handleImage={(e) => {
+                    formik.setFieldValue("images", [
+                      0,
+                      URL.createObjectURL(e.target.files[0]),
+                    ]);
+                  }}
+                />
               </Box>
             </form>
           </ContentBody>

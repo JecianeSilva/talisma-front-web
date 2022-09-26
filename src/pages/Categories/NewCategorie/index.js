@@ -29,7 +29,7 @@ function NewCategorie() {
       description: "",
       status: 0,
       ordem: 1,
-      image1: "",
+      images: [0, null],
     },
     validationSchema: Yup.object({
       description: Yup.string().required("Campo Obrigatório"),
@@ -243,9 +243,14 @@ function NewCategorie() {
               </Typography>
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
                 <CardImage
-                  image={formik.values.image1}
+                  image={formik.values.images}
                   formik={formik}
-                  index={1}
+                  handleImage={(e) => {
+                    formik.setFieldValue("images", [
+                      0,
+                      URL.createObjectURL(e.target.files[0]),
+                    ]);
+                  }}
                 />
               </Box>
             </form>

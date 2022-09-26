@@ -175,7 +175,8 @@ function StockHistory({ id }) {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os usuários"
+        err?.response.data?.message ||
+          "Não foi possível carregar o histórico de pedidos"
       );
     } finally {
       setLoading();

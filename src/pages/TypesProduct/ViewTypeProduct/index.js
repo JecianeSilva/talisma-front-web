@@ -22,25 +22,31 @@ import history from "../../../config/history";
 import { Container, ContentBody, ContentHeader } from "../styles";
 import { useParams } from "react-router-dom";
 
-function ViewTypeClient() {
-  const [loading, setLoading] = useState(false);
-  const [userType, setUserType] = useState();
+function ViewTypeProduct() {
+  const [loading, setLoading] = useState(true);
+  const [productType, setProductType] = useState();
   const formEl = useRef(null);
 
   const params = useParams();
   const { id } = params;
 
   // get list users
-  async function loadDataTypeUser() {
+  async function loadData() {
     setLoading(true);
     try {
-      const { data } = await Api.get(`/userType/${id}`);
-      setUserType(data);
+      // const { data } = await Api.get(`/product-type/${id}`);
+      const data = {
+        id: "00000000",
+        description: "Lorem ipsum dolor",
+        status: 0,
+      };
+      setProductType(data);
     } catch (err) {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os dados"
+        err?.response.data?.message ||
+          "Não foi possível carregar os tipos de produto"
       );
     } finally {
       setLoading(false);
@@ -48,7 +54,7 @@ function ViewTypeClient() {
   }
 
   useEffect(() => {
-    loadDataTypeUser();
+    loadData();
   }, [id]);
 
   return (
@@ -81,7 +87,7 @@ function ViewTypeClient() {
                 lineheight: "43px",
               }}
             >
-              Tipo de cliente
+              Tipo de produto
             </Typography>
 
             <div style={{ display: "flex" }}>
@@ -94,7 +100,7 @@ function ViewTypeClient() {
                   marginLeft: "20px",
                   borderRadius: "24px",
                 }}
-                onClick={() => history.push(`/tipos-cliente/editar-tipo/${id}`)}
+                onClick={() => history.push(`/produto/tipos/editar-tipo/${id}`)}
               >
                 Editar
               </Button>
@@ -127,7 +133,7 @@ function ViewTypeClient() {
                       placeholder="id"
                       variant="outlined"
                       autoComplete="text"
-                      value={userType?.id}
+                      value={productType?.id}
                       fullWidth
                     />
                   </Grid>
@@ -138,12 +144,11 @@ function ViewTypeClient() {
                       required
                       size="small"
                       id="description"
-                      disabled
                       name="description"
                       variant="outlined"
                       autoComplete="text"
                       placeholder="Descrição da categoria"
-                      value={userType?.description}
+                      value={productType?.description}
                       fullWidth
                     />
                   </Grid>
@@ -156,11 +161,10 @@ function ViewTypeClient() {
                       size="small"
                       variant="outlined"
                       required
-                      disabled
                       fullWidth
                       id="status"
                       name="status"
-                      value={userType?.status}
+                      value={productType?.status}
                       autoFocus
                     >
                       <MenuItem value={0} key={0}>
@@ -181,4 +185,4 @@ function ViewTypeClient() {
   );
 }
 
-export default ViewTypeClient;
+export default ViewTypeProduct;

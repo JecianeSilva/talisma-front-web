@@ -30,6 +30,7 @@ function TypeClients() {
       field: "id",
       cellStyle: {
         whiteSpace: "nowrap",
+        width: 200,
       },
     },
     {
@@ -44,7 +45,7 @@ function TypeClients() {
       field: "status",
       cellStyle: {
         whiteSpace: "nowrap",
-        minWidth: 140,
+        width: 140,
       },
       render: (rowData) => (rowData.status === 0 ? "Ativo" : "Inativo"),
     },
@@ -59,7 +60,7 @@ function TypeClients() {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os usuários"
+        err?.response.data?.message || "Não foi possível carregar os dados"
       );
     } finally {
       setLoading(false);

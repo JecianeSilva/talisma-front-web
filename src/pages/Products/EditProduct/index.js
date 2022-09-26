@@ -27,16 +27,15 @@ import FormCharacter from "./FormCharacter";
 import FormStock from "./FormStock";
 import HorizontalLabelPositionBelowStepper from "../../../components/ProductStepper";
 import ProcuctStepper from "../../../components/ProductStepper";
-
+import image1 from "../../../assets/images/product1.png";
 function EditProduct() {
   const params = useParams();
   const formEl = useRef(null);
 
   const { id } = params;
   const [value, setValue] = React.useState(0);
-  const [isValid, setIsValid] = React.useState(false);
   const [callHandleSubmit, setCallHandleSubmit] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleChange = (event, newValue) => {
     setCallHandleSubmit(true);
@@ -61,6 +60,12 @@ function EditProduct() {
       minStock: 0,
       controlStock: "",
       stockInitial: 0,
+      images: new Map([
+        [1, image1],
+        [2, null],
+        [3, null],
+        [4, null],
+      ]),
     },
     validationSchema: Yup.object({
       codeExt: Yup.string().required("Campo Obrigatório"),
@@ -90,7 +95,7 @@ function EditProduct() {
         // Api.patch(`/product/${id}`, data)
         //   .then((response) => {
         //     if (response.status === 200) {
-        toast.success("Produto cadastrado com sucesso!");
+        toast.success("Produto alterado com sucesso!");
         history.goBack();
         //     }
         //   })
@@ -109,7 +114,88 @@ function EditProduct() {
     },
   });
 
-  useEffect(() => {});
+  async function loadData() {
+    try {
+      // const { data } = await Api.get(`/product/${id}`);
+      // const responseUserType = await Api.get(`/userType`);
+      // if (responseUserType) {
+      //   setUserTypes(
+      //     responseUserType.data.map((item) => ({
+      //       id: item.id,
+      //       description: item.description,
+      //     }))
+      //   );
+      // }
+      formik.setFieldValue("codeExt", "00000000");
+      formik.setFieldValue("ref", "00000000");
+      formik.setFieldValue("peso", "0,5 kg");
+      formik.setFieldValue("details", "detalhes do produto");
+      formik.setFieldValue("name", "nome do produto");
+      formik.setFieldValue("categores", 1);
+      formik.setFieldValue("minStock", "1.000");
+      formik.setFieldValue("stockInitial", "1.000");
+      formik.setFieldValue("controlStock", 1);
+      formik.setFieldValue("type", 1);
+      formik.setFieldValue("banho", 1);
+      formik.setFieldValue("price", 0.0);
+      formik.setFieldValue("isNew", true);
+      formik.setFieldValue("color", [
+        {
+          ref: "000000",
+          description: "Ouro",
+          price: "100",
+          status: 0,
+        },
+        {
+          ref: "000001",
+          description: "Ouro",
+          price: "100",
+          status: 0,
+        },
+        {
+          ref: "000002",
+          description: "Ouro",
+          price: "100",
+          status: 0,
+        },
+      ]);
+      formik.setFieldValue("tamanho", [
+        {
+          ref: "000016",
+          description: 16,
+          price: "100",
+          status: 0,
+        },
+        {
+          ref: "000018",
+          description: 18,
+          price: "100",
+          status: 0,
+        },
+        {
+          ref: "000020",
+          description: 20,
+          price: "100",
+          status: 0,
+        },
+      ]);
+      formik.setFieldValue("dateLimit", "2022-09-20");
+      formik.setFieldValue("quantity", 100);
+      formik.setFieldValue("status", 0);
+      // formik.setFieldValue("images", ");
+    } catch (err) {
+      toast(
+        "error",
+        "Erro",
+        err?.response.data?.message || "Não foi possível carregar os dados"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    loadData();
+  }, [id]);
   return (
     <>
       <Container>
@@ -137,7 +223,7 @@ function EditProduct() {
               lineheight: "43px",
             }}
           >
-            Cadastrar produto
+            Editar produto
           </Typography>
 
           <div style={{ display: "flex" }}>
@@ -158,86 +244,92 @@ function EditProduct() {
               variant="contained"
               size="large"
               style={{
-                backgroundColor:
-                  value === 2 || formik.isValid ? "#21AB69" : "#cecece",
+                backgroundColor: "#21AB69",
                 color: "#FFF",
                 marginLeft: "20px",
                 borderRadius: "24px",
               }}
               type="submit"
-              //disabled={!(value === 2 || formik.isValid)}
               onClick={() => formik.handleSubmit()}
             >
               Salvar
             </Button>
           </div>
         </ContentHeader>
-        <ContentBody>
-          <Box
-            sx={{
-              borderBottom: 1,
-              borderColor: "divider",
-              width: "100%",
-            }}
-          >
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="transparent"
-              textColor="secondary"
+        {loading ? (
+          <Loading />
+        ) : (
+          <ContentBody>
+            <Box
+              sx={{
+                borderBottom: 1,
+                borderColor: "divider",
+                width: "100%",
+              }}
             >
-              <Tab label="Produto" {...a11yProps(0)} />
-              <Tab label="Característica" {...a11yProps(1)} />
-              <Tab label="Estoque" {...a11yProps(2)} />
-              <ProcuctStepper
-                steps={["Produto", "Característica", "Estoque"]}
-                activeStep={value}
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                indicatorColor="transparent"
+                textColor="secondary"
+              >
+                <Tab label="Produto" {...a11yProps(0)} />
+                <Tab label="Característica" {...a11yProps(1)} />
+                <Tab label="Estoque" {...a11yProps(2)} />
+                <ProcuctStepper
+                  steps={["Produto", "Característica", "Estoque"]}
+                  activeStep={value}
+                />
+              </Tabs>
+              <Divider />
+            </Box>
+            <TabPanel
+              value={value}
+              index={0}
+              style={{ padding: "1.5rem 1rem" }}
+            >
+              <FormProduct
+                id={id}
+                formEl={formEl}
+                value={value}
+                formik={formik}
+                loading={loading}
+                callHandleSubmit={callHandleSubmit}
+                setCallHandleSubmit={setCallHandleSubmit}
               />
-            </Tabs>
-            <Divider />
-          </Box>
-          <TabPanel value={value} index={0} style={{ padding: "1.5rem 1rem" }}>
-            <FormProduct
-              id={id}
-              formEl={formEl}
+            </TabPanel>
+            <TabPanel
               value={value}
-              formik={formik}
-              loading={loading}
-              callHandleSubmit={callHandleSubmit}
-              setCallHandleSubmit={setCallHandleSubmit}
-            />
-          </TabPanel>
-          <TabPanel
-            value={value}
-            index={1}
-            style={{ padding: "1rem 0px", width: "100%", margin: "0px" }}
-          >
-            <FormCharacter
-              id={id}
-              formEl={formEl}
+              index={1}
+              style={{ padding: "1rem 0px", width: "100%", margin: "0px" }}
+            >
+              <FormCharacter
+                id={id}
+                formEl={formEl}
+                value={value}
+                formik={formik}
+                loading={loading}
+                callHandleSubmit={callHandleSubmit}
+                setCallHandleSubmit={setCallHandleSubmit}
+              />
+            </TabPanel>
+            <TabPanel
               value={value}
-              formik={formik}
-              loading={loading}
-              callHandleSubmit={callHandleSubmit}
-              setCallHandleSubmit={setCallHandleSubmit}
-            />
-          </TabPanel>
-          <TabPanel
-            value={value}
-            index={2}
-            style={{ padding: "1rem 0px", width: "100%", margin: "0px" }}
-          >
-            <FormStock
-              id={id}
-              formEl={formEl}
-              value={value}
-              formik={formik}
-              loading={loading}
-              callHandleSubmit={callHandleSubmit}
-              setCallHandleSubmit={setCallHandleSubmit}
-            />
-          </TabPanel>
-        </ContentBody>
+              index={2}
+              style={{ padding: "1rem 0px", width: "100%", margin: "0px" }}
+            >
+              <FormStock
+                id={id}
+                formEl={formEl}
+                value={value}
+                formik={formik}
+                loading={loading}
+                callHandleSubmit={callHandleSubmit}
+                setCallHandleSubmit={setCallHandleSubmit}
+              />
+            </TabPanel>
+          </ContentBody>
+        )}
       </Container>
     </>
   );

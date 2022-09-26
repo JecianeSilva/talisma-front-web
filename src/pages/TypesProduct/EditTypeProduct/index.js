@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
   Typography,
   Button,
@@ -12,7 +14,8 @@ import {
   IconButton,
   Divider,
 } from "@material-ui/core";
-import { ArrowBackIos } from "@material-ui/icons";
+import { ArrowBackIos, Search } from "@material-ui/icons";
+import PropTypes from "prop-types";
 import Api from "../../../config/api";
 
 import Loading from "../../../components/Loading";
@@ -22,33 +25,74 @@ import history from "../../../config/history";
 import { Container, ContentBody, ContentHeader } from "../styles";
 import { useParams } from "react-router-dom";
 
-function ViewTypeClient() {
+function EditClient() {
   const [loading, setLoading] = useState(false);
-  const [userType, setUserType] = useState();
   const formEl = useRef(null);
 
   const params = useParams();
   const { id } = params;
 
-  // get list users
-  async function loadDataTypeUser() {
-    setLoading(true);
+  async function loadData() {
     try {
-      const { data } = await Api.get(`/userType/${id}`);
-      setUserType(data);
+      // const { data } = await Api.get(`/product-type/${id}`);
+      formik.setFieldValue("id", "00000000");
+      formik.setFieldValue("description", "Lorem ipsum dolor");
+      formik.setFieldValue("status", 0);
     } catch (err) {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os dados"
+        err?.response.data?.message ||
+          "Não foi possível carregar o tipo do produto"
       );
     } finally {
-      setLoading(false);
+      setLoading();
+    }
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      description: "",
+      status: 0,
+    },
+    validationSchema: Yup.object({
+      description: Yup.string().required("Campo Obrigatório"),
+      status: Yup.string().required("Campo Obrigatório"),
+    }),
+    onSubmit: async (values) => {
+      handleSubmit(values);
+    },
+  });
+
+  function handleSubmit(values) {
+    const data = {
+      description: values.description,
+      status: values.status,
+    };
+    console.log(data);
+    try {
+      // Api.patch(`/product-type/${id}`, data)
+      //   .then((response) => {
+      //     if (response.status === 201) {
+      toast.success("Tipo de produto alterado com sucesso!");
+      formEl.current.reset();
+      history.goBack();
+      //   }
+      // })
+      // .catch((err) => {
+      //   toast.error(err.response.data.message);
+      // });
+    } catch (error) {
+      if (error.response) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Error no sistema! Tente novamente mais tarde.");
+      }
     }
   }
 
   useEffect(() => {
-    loadDataTypeUser();
+    loadData();
   }, [id]);
 
   return (
@@ -81,7 +125,7 @@ function ViewTypeClient() {
                 lineheight: "43px",
               }}
             >
-              Tipo de cliente
+              Editar tipo de produto
             </Typography>
 
             <div style={{ display: "flex" }}>
@@ -89,14 +133,26 @@ function ViewTypeClient() {
                 variant="contained"
                 size="large"
                 style={{
-                  backgroundColor: "#C14979",
+                  backgroundColor: "#F35457",
+                  color: "#FFF",
+                  borderRadius: "24px",
+                }}
+                onClick={() => history.goBack()}
+              >
+                Descartar
+              </Button>
+              <Button
+                variant="contained"
+                size="large"
+                style={{
+                  backgroundColor: "#21AB69",
                   color: "#FFF",
                   marginLeft: "20px",
                   borderRadius: "24px",
                 }}
-                onClick={() => history.push(`/tipos-cliente/editar-tipo/${id}`)}
+                onClick={formik.handleSubmit}
               >
-                Editar
+                Salvar
               </Button>
             </div>
           </ContentHeader>
@@ -127,41 +183,48 @@ function ViewTypeClient() {
                       placeholder="id"
                       variant="outlined"
                       autoComplete="text"
-                      value={userType?.id}
+                      value={formik.values.id}
+                      onChange={formik.handleChange}
+                      error={formik.touched.id && Boolean(formik.errors.id)}
+                      helperText={formik.touched.id && formik.errors.id}
                       fullWidth
                     />
                   </Grid>
-
                   <Grid item xs={12} md={4} sm={6}>
                     <Typography>Descrição*</Typography>
                     <TextField
                       required
                       size="small"
                       id="description"
-                      disabled
                       name="description"
                       variant="outlined"
                       autoComplete="text"
                       placeholder="Descrição da categoria"
-                      value={userType?.description}
+                      value={formik.values.description}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.description &&
+                        Boolean(formik.errors.description)
+                      }
+                      helperText={
+                        formik.touched.description && formik.errors.description
+                      }
                       fullWidth
                     />
                   </Grid>
-
                   <Grid item xs={12} md={4} sm={6}>
                     <Typography>Status*</Typography>
-
                     <TextField
                       select
                       size="small"
                       variant="outlined"
                       required
-                      disabled
                       fullWidth
                       id="status"
                       name="status"
-                      value={userType?.status}
+                      value={formik.values.status}
                       autoFocus
+                      onChange={formik.handleChange}
                     >
                       <MenuItem value={0} key={0}>
                         {"Ativo"}
@@ -181,4 +244,4 @@ function ViewTypeClient() {
   );
 }
 
-export default ViewTypeClient;
+export default EditClient;

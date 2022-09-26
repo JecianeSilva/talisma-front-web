@@ -38,19 +38,6 @@ function FormProduct({
   callHandleSubmit,
   setCallHandleSubmit,
 }) {
-  const [image, setImage] = useState();
-
-  useEffect(() => {
-    if (callHandleSubmit) {
-      //formik.handleSubmit();
-      //setCallHandleSubmit(false);
-    }
-  }, [callHandleSubmit]);
-
-  const handleImage = (e) => {
-    setImage(URL.createObjectURL(e.target.files[0]));
-  };
-
   return (
     <>
       {loading ? (
@@ -75,7 +62,7 @@ function FormProduct({
                   name="codeExt"
                   variant="outlined"
                   autoComplete="text"
-                  value={formik.values.codeExt}
+                  value={formik.values?.codeExt}
                   onChange={formik.handleChange}
                   error={
                     formik.touched.codeExt && Boolean(formik.errors.codeExt)
@@ -94,7 +81,7 @@ function FormProduct({
                   placeholder="Nome do produto"
                   variant="outlined"
                   autoComplete="text"
-                  value={formik.values.name}
+                  value={formik.values?.name}
                   onChange={formik.handleChange}
                   error={formik.touched.name && Boolean(formik.errors.name)}
                   helperText={formik.touched.name && formik.errors.name}
@@ -111,7 +98,7 @@ function FormProduct({
                   fullWidth
                   id="categories"
                   name="categories"
-                  value={formik.values.categories}
+                  value={formik.values?.categories}
                   autoFocus
                   onChange={formik.handleChange}
                 >
@@ -130,7 +117,7 @@ function FormProduct({
                   fullWidth
                   id="type"
                   name="type"
-                  value={formik.values.type}
+                  value={formik.values?.type}
                   autoFocus
                   onChange={formik.handleChange}
                 >
@@ -147,9 +134,10 @@ function FormProduct({
                   variant="outlined"
                   required
                   fullWidth
-                  id="type"
-                  name="type"
-                  value={formik.values.type}
+                  placeholder="Selecione o banho do produto"
+                  id="banho"
+                  name="banho"
+                  value={formik.values?.banho}
                   autoFocus
                   onChange={formik.handleChange}
                 >
@@ -168,12 +156,18 @@ function FormProduct({
                   fullWidth
                   id="model"
                   name="model"
-                  value={formik.values.type}
+                  value={formik.values.model}
                   autoFocus
                   onChange={formik.handleChange}
                 >
                   <MenuItem value={1} key={1}>
                     {"Masculino"}
+                  </MenuItem>
+                  <MenuItem value={2} key={2}>
+                    {"Feminino"}
+                  </MenuItem>
+                  <MenuItem value={3} key={3}>
+                    {"Infantil"}
                   </MenuItem>
                 </TextField>
               </Grid>
@@ -273,10 +267,23 @@ function FormProduct({
           </Typography>
 
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
-            <CardImage image={formik.values.image1} formik={formik} index={1} />
-            <CardImage image={formik.values.image2} formik={formik} index={2} />
-            <CardImage image={formik.values.image3} formik={formik} index={3} />
-            <CardImage image={formik.values.image4} formik={formik} index={4} />
+            {Array.from(formik.values.images).map((value) => {
+              return (
+                <CardImage
+                  image={value}
+                  formik={formik}
+                  handleImage={(e) => {
+                    const images = formik.values.images;
+                    formik.values.images.set(
+                      value[0],
+                      URL.createObjectURL(e.target.files[0])
+                    );
+                    formik.setFieldValue("images", images);
+                  }}
+                />
+              );
+              // return <h1>{value}</h1>;
+            })}
           </Box>
         </form>
       )}

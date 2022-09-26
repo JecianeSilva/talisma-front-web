@@ -4,128 +4,80 @@ import { Box, CardContent, SvgIcon, Typography } from "@material-ui/core";
 import { ReactComponent as imageUpload } from "../../assets/icons/image-upload.svg";
 import { ReactComponent as imageSwap } from "../../assets/icons/image-swap.svg";
 import { DeleteOutline } from "@material-ui/icons";
+import {
+  ButtonCard,
+  IconButton,
+  Image,
+  ImageCard,
+  ImageContent,
+  Input,
+  Label,
+  UploadCard,
+} from "./styles";
 
-function CardImage({ image, formik, index }) {
-  const handleImage = (e) => {
-    formik.setFieldValue(
-      `image${index}`,
-      URL.createObjectURL(e.target.files[0])
-    );
+function CardImage({ image, formik, handleImage, disabled }) {
+  const handleDelete = (e) => {
+    const images = formik.values.images;
+    formik.values.images.set(image[0], null);
+    formik.setFieldValue("images", images);
   };
-
   return (
     <CardContent>
-      {image && (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "flex-end",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                background: "#FFFFFF",
-                borderRadius: "0px 4px",
-                zIndex: 9999,
-              }}
-              onClick={() => formik.setFieldValue(`image${index}`, null)}
-            >
-              <DeleteOutline style={{ margin: "4px 2px" }} color={"disabled"} />
-            </div>
-          </div>
-          <div
-            style={{
-              width: "220px",
-              height: "220px",
-              borderRadius: 10,
-              boxShadow: "0px 0px 3px 0px #bdbcbc",
-            }}
-          >
-            <img
-              style={{
-                height: "220px",
-                width: "220px",
-                objectFit: "cover",
-              }}
-              alt="imagem do produto"
-              src={image}
-            />
-          </div>
-          <div
-            style={{
-              marginTop: "-44px",
-              zIndex: 9999,
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "end",
-            }}
-          >
-            <input
+      {image && image[1] !== null ? (
+        <ImageCard>
+          <ButtonCard>
+            <IconButton onClick={handleDelete} disabled={disabled}>
+              <DeleteOutline style={{ margin: "2px 4px" }} color={"disabled"} />
+            </IconButton>
+          </ButtonCard>
+          <ImageContent>
+            <Image alt="imagem do produto" src={image && image[1]} />
+          </ImageContent>
+          <ButtonCard style={{ marginTop: "-36px" }}>
+            <Input
               accept="image/*"
-              id={`contained-button-file-${index}`}
+              id={`image-${image[0]}`}
               type="file"
-              style={{
-                display: "none",
-              }}
               onChange={handleImage}
+              disabled={disabled}
             />
-            <label
-              for={`contained-button-file-${index}`}
-              style={{
-                background: "rgba(255, 255, 255,0.96)",
-                borderRadius: "4px 0px",
-              }}
-            >
-              <SvgIcon
-                component={imageSwap}
-                style={{ margin: 4 }}
-                viewBox="0 0 35 28"
-              />
-            </label>
-          </div>
-        </div>
-      )}
-      <input
-        accept="image/*"
-        id={`contained-button-file-${index}`}
-        type="file"
-        style={{
-          display: "none",
-        }}
-        onChange={handleImage}
-      />
-
-      <label for={`contained-button-file-${index}`}>
-        <Box
-          sx={{
-            display: image ? "none" : "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "220px",
-            width: "220px",
-            border: image ? "none" : "2px dashed #bdbcbc",
-            borderRadius: 10,
-          }}
-        >
-          <SvgIcon
-            component={imageUpload}
-            style={{ width: "1.3em", height: "1.3em" }}
-            viewBox="0 0 32 32"
+            <Label for={`image-${image[0]}`}>
+              <ButtonCard>
+                <IconButton pos={"end"} disabled={disabled}>
+                  <SvgIcon
+                    component={imageSwap}
+                    style={{ margin: 4 }}
+                    viewBox="0 0 35 28"
+                  />
+                </IconButton>
+              </ButtonCard>
+            </Label>
+          </ButtonCard>
+        </ImageCard>
+      ) : (
+        <Box>
+          <Input
+            accept="image/*"
+            id={`image-${image[0]}`}
+            type="file"
+            onChange={handleImage}
+            disabled={disabled}
           />
-          ,
-          <Typography
-            variant="h2"
-            color="secondary"
-            style={{ textAlign: "center", padding: "0px 2rem" }}
-          >
-            Fazer upload de imagem...
-          </Typography>
+          <Label for={`image-${image[0]}`}>
+            <UploadCard image={image}>
+              <SvgIcon
+                component={imageUpload}
+                style={{ width: "1.3em", height: "1.3em" }}
+                viewBox="0 0 32 32"
+              />
+              ,
+              <Typography variant="h2" color="secondary" align="center">
+                Fazer upload de imagem...
+              </Typography>
+            </UploadCard>
+          </Label>
         </Box>
-      </label>
+      )}
     </CardContent>
   );
 }

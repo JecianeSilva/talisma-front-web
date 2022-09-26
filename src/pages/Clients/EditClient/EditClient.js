@@ -160,10 +160,11 @@ function FormEditClient({ id, formEl, callHandleSubmit, setCallHandleSubmit }) {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os usuários"
+        err?.response.data?.message ||
+          "Não foi possível carregar dados do cliente"
       );
     } finally {
-      setLoading();
+      setLoading(false);
     }
   }
 
@@ -216,6 +217,8 @@ function FormEditClient({ id, formEl, callHandleSubmit, setCallHandleSubmit }) {
       } else {
         toast.error("Error no sistema! Tente novamente mais tarde.");
       }
+    } finally {
+      setLoading(false);
     }
   }
   return (

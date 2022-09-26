@@ -32,19 +32,8 @@ import Api from "../../../config/api";
 import MaterialTable from "material-table";
 import { localization } from "../../../utils/location-ptBr";
 
-function FormCharacter({
-  id,
-  formEl,
-  value,
-  formik,
-  loading,
-  callHandleSubmit,
-  setCallHandleSubmit,
-}) {
-  const [colorTable, setColorTable] = useState([]);
+function FormCharacter({ id, formEl, value, formik, loading }) {
   const [color, setColor] = useState();
-
-  const [tamTable, setTamTable] = useState([]);
   const [tamanho, setTamanho] = useState();
 
   const colorTableColumn = [
@@ -112,13 +101,6 @@ function FormCharacter({
       render: (rowData) => (rowData.status === 0 ? "Ativo" : "Inativo"),
     },
   ];
-
-  useEffect(() => {
-    if (callHandleSubmit && value === 1) {
-      //ormik.handleSubmit();
-      //setCallHandleSubmit(false);
-    }
-  }, [callHandleSubmit]);
 
   return (
     <>
@@ -231,8 +213,8 @@ function FormCharacter({
                     // disabled={value !== 0}
                     onClick={() => {
                       if (color) {
-                        setColorTable([
-                          ...colorTable,
+                        formik.setFieldValue("color", [
+                          ...formik.values.color,
                           {
                             ref: "000000",
                             description: color,
@@ -254,7 +236,7 @@ function FormCharacter({
             </Box>
             <MaterialTable
               columns={colorTableColumn}
-              data={colorTable}
+              data={formik.values.color}
               style={{ width: "100%" }}
               options={{
                 paging: false,
@@ -274,11 +256,11 @@ function FormCharacter({
                   tooltip: "Limpar",
                   position: "row",
                   onClick: (event, rowData) => {
-                    const temp = colorTable.filter((item) => {
-                      return item.description !== rowData.description;
+                    const temp = formik.values.color.filter((item) => {
+                      return item.id !== rowData.id;
                     });
 
-                    setColorTable(temp);
+                    formik.setFieldValue("color", temp);
                   },
                 },
               ]}
@@ -302,7 +284,7 @@ function FormCharacter({
                     size="small"
                     id="tamDescription"
                     name="tamDescription"
-                    placeholder="Descrição da cor"
+                    placeholder="Descrição do tamanho"
                     variant="outlined"
                     autoComplete="text"
                     value={tamanho}
@@ -328,8 +310,8 @@ function FormCharacter({
                     // disabled={value !== 0}
                     onClick={() => {
                       if (tamanho) {
-                        setTamTable([
-                          ...tamTable,
+                        formik.setFieldValue("tamanho", [
+                          ...formik.value.tamanho,
                           {
                             ref: "000000",
                             description: tamanho,
@@ -351,7 +333,7 @@ function FormCharacter({
             </Box>
             <MaterialTable
               columns={tamTableColumn}
-              data={tamTable}
+              data={formik.values.tamanho}
               style={{ width: "100%" }}
               options={{
                 paging: false,
@@ -371,11 +353,11 @@ function FormCharacter({
                   tooltip: "Limpar",
                   position: "row",
                   onClick: (event, rowData) => {
-                    const temp = tamTable.filter((item) => {
-                      return item.description !== rowData.description;
+                    const temp = formik.values.tamanho.filter((item) => {
+                      return item.id !== rowData.id;
                     });
 
-                    setTamTable(temp);
+                    formik.setFieldValue("tamanho", temp);
                   },
                 },
               ]}

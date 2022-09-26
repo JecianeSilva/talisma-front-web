@@ -23,8 +23,7 @@ import { useParams } from "react-router-dom";
 import FormProduct from "./FormProduct";
 import FormCharacter from "./FormCharacter";
 import FormStock from "./FormStock";
-import ProcuctStepper from "../../../components/ProductStepper";
-
+import image1 from "../../../assets/images/product1.png";
 function EditClient() {
   const params = useParams();
 
@@ -99,8 +98,12 @@ function EditClient() {
         // stck: "Cor",
         quantity: "100",
         status: 0,
-        image:
-          "blob:http://localhost:3000/32235cd3-075c-4ca1-825c-00c0b8940c5c",
+        images: new Map([
+          [1, image1],
+          [2, null],
+          [3, null],
+          [4, null],
+        ]),
       };
       // const { data } = await Api.get(`/product/${id}`);
       setProduct(data);
@@ -108,7 +111,7 @@ function EditClient() {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os usuários"
+        err?.response.data?.message || "Não foi possível carregar os dados"
       );
     } finally {
       setLoading(false);

@@ -39,6 +39,7 @@ function Clients() {
         whiteSpace: "nowrap",
         minWidth: 150,
       },
+      render: (rowData) => (rowData.type ? "Categoria 1" : "Categoria 1"),
     },
     {
       title: "Email",
@@ -122,7 +123,8 @@ function Clients() {
       toast(
         "error",
         "Erro",
-        err?.response.data?.message || "Não foi possível carregar os usuários"
+        err?.response.data?.message ||
+          "Não foi possível carregar dados do cliente"
       );
     } finally {
       setLoading(false);

@@ -132,6 +132,7 @@ function FormProduct({
                   variant="outlined"
                   required
                   fullWidth
+                  placeholder="Selecione o banho do produto"
                   id="type"
                   name="type"
                   value={formik.values.type}
@@ -159,6 +160,12 @@ function FormProduct({
                 >
                   <MenuItem value={1} key={1}>
                     {"Masculino"}
+                  </MenuItem>
+                  <MenuItem value={2} key={2}>
+                    {"Feminino"}
+                  </MenuItem>
+                  <MenuItem value={3} key={3}>
+                    {"Infantil"}
                   </MenuItem>
                 </TextField>
               </Grid>
@@ -257,10 +264,22 @@ function FormProduct({
             Imagens do produto
           </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
-            <CardImage image={formik.values.image1} formik={formik} index={1} />
-            <CardImage image={formik.values.image2} formik={formik} index={2} />
-            <CardImage image={formik.values.image3} formik={formik} index={3} />
-            <CardImage image={formik.values.image4} formik={formik} index={4} />
+            {Array.from(formik.values.images).map((value) => {
+              return (
+                <CardImage
+                  image={value}
+                  formik={formik}
+                  handleImage={(e) => {
+                    const images = formik.values.images;
+                    formik.values.images.set(
+                      value[0],
+                      URL.createObjectURL(e.target.files[0])
+                    );
+                    formik.setFieldValue("images", images);
+                  }}
+                />
+              );
+            })}
           </Box>
         </form>
       )}

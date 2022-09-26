@@ -73,4 +73,20 @@ export const GlobalStyle = createGlobalStyle`
     margin-top: 5px;
     font-size: 10px;
   }
+  .MuiIconButton-colorInherit {
+    color: #4F4F4F;
+
+    .clear{
+      color: red;
+    }
+    .clear:disabled{
+      color: #8c8c8c;
+    }
+    .add{
+      color: green;
+    }
+    .add:disabled{
+      color: #8c8c8c;
+    }
+}
 `;

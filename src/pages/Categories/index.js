@@ -187,8 +187,8 @@ function Categories() {
             </Box>
           </ContentHeader>
           <Table
-            pathname="produto"
-            pathname2="categorias"
+            pathname="categoria"
+            pathname2="categoria"
             perPage={10}
             columns={columnsTable}
             data={categories}
